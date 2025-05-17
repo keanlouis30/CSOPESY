@@ -1,12 +1,17 @@
 #include<iostream>
 #include<string>
 #include <cstdlib>
+#include <ctime>
+#include <mutex>
 
 void printBanner(){
 
     system("chcp 65001 > nul");
 
-    std::cout << "\033[33m" R"(
+    
+    std::cout << "\033[33m";
+    std::cout << R"(
+
  ██████╗███████╗ ██████╗ ██████╗ ███████╗███████╗██╗   ██╗    ███████╗ ██╗██╗  ██╗     ██████╗  ██╗ ██████╗ 
 ██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝╚██╗ ██╔╝    ██╔════╝███║██║  ██║    ██╔════╝ ███║██╔═████╗
 ██║     ███████╗██║   ██║██████╔╝█████╗  ███████╗ ╚████╔╝     ███████╗╚██║███████║    ██║  ███╗╚██║██║██╔██║
@@ -14,11 +19,33 @@ void printBanner(){
 ╚██████╗███████║╚██████╔╝██║     ███████╗███████║   ██║       ███████║ ██║     ██║    ╚██████╔╝ ██║╚██████╔╝
  ╚═════╝╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═╝     ╚═╝     ╚═════╝  ╚═╝ ╚═════╝ 
                                                                                                             
-)" << std::endl;
+    )" << std::endl;
+
+
+
 
     std::cout << "\033[1m" << "\033[32m" << "Hello, welcome to CSOPESY S14 Group 10's Command-Line Interface" << "\033[0m" << std::endl;
     std::cout << "Type" << " \033[35m" << "[help]"  << "\033[0m" << " for the basic instructions of using the CLI\n" << std::endl;
     std::cout.flush();
+}
+
+std::string getCurrentTimestamp() {
+    static std::mutex localtime_mutex;
+
+    std::time_t now = std::time(nullptr);
+
+    // wrapper function so that localtime is thread safe
+    std::tm localTime;
+    {
+        std::lock_guard<std::mutex> lock(localtime_mutex);
+        std::tm* temp = std::localtime(&now);
+        localTime = *temp;
+    }
+
+    char buffer[80];
+    std::strftime(buffer, sizeof(buffer), "%m/%d/%Y, %I:%M:%S %p", &localTime);
+
+    return std::string(buffer);
 }
 
 int main(){
@@ -31,6 +58,8 @@ int main(){
 
         //command handling
         if (input == "initialize") {
+            std::string timestamp = getCurrentTimestamp();
+            std::cout << "Created At: " << timestamp << "\n" << std::endl;
             std::cout << "initialize command recognized. Doing something." << std::endl;
         }
         else if (input == "screen") {
