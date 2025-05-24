@@ -2,7 +2,45 @@
 #include<string>
 #include <cstdlib>
 #include <ctime>
-#include <mutex>
+
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <unordered_map>
+#include <iomanip>
+
+class Console {
+public:
+    std::string name;
+    int currentLine;
+    int totalLines;
+    std::string timestamp;
+
+    Console(const std::string& n, int total) : name(n), currentLine(0), totalLines(total) {
+        time_t now = time(nullptr);
+        char buf[100];
+        strftime(buf, sizeof(buf), "%m/%d/%Y, %I:%M:%S %p", localtime(&now));
+        timestamp = buf;
+    }
+
+    void display() {
+        std::string input;
+        while (true) {
+            system("cls");  // clear screen
+            std::cout << "\033[32m" << "=== Screen: " << name << " ===\033[0m\n";
+            std::cout << "Process: " << name << "\n";
+            std::cout << "Instruction: Line " << currentLine + 1 << " / " << totalLines << "\n";
+            std::cout << "Created at: " << timestamp << "\n";
+            std::cout << "\nType 'exit' to return to the main menu.\n";
+            std::cout << "\033[36mScreen> \033[0m";
+
+            std::getline(std::cin, input);
+            if (input == "exit") break;
+            if (currentLine < totalLines - 1) currentLine++;
+        }
+    }
+};
+
 
 void printBanner(){
 
@@ -29,28 +67,9 @@ void printBanner(){
     std::cout.flush();
 }
 
-std::string getCurrentTimestamp() {
-    static std::mutex localtime_mutex;
-
-    std::time_t now = std::time(nullptr);
-
-    // wrapper function so that localtime is thread safe
-    std::tm localTime;
-    {
-        std::lock_guard<std::mutex> lock(localtime_mutex);
-        std::tm* temp = std::localtime(&now);
-        localTime = *temp;
-    }
-
-    char buffer[80];
-    std::strftime(buffer, sizeof(buffer), "%m/%d/%Y, %I:%M:%S %p", &localTime);
-
-    return std::string(buffer);
-}
-
 int main(){
     printBanner();
-    std::string input;
+    std::string input, screenName;
 
     do{
         std::cout << "\033[36m" << "Command> " << "\033[0m";
@@ -58,12 +77,20 @@ int main(){
 
         //command handling
         if (input == "initialize") {
-            std::string timestamp = getCurrentTimestamp();
-            std::cout << "Created At: " << timestamp << "\n" << std::endl;
             std::cout << "initialize command recognized. Doing something." << std::endl;
         }
-        else if (input == "screen") {
-            std::cout << "screen command recognized. Doing something." << std::endl;
+        else if (input.rfind("screen", 0) == 0) {
+            if(input.rfind("screen -s", 0) == 0){
+                screenName = input.substr(10);
+                Console Screen = Console(screenName, 20);
+                Screen.display();
+            } else if (input.rfind("screen -r", 0) == 0){
+                screenName = input.substr(10);
+                Console Screen = Console(screenName, 20);
+                Screen.display();
+            }else{
+                std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
+            }
         }
         else if (input == "scheduler-test") {
             std::cout << "scheduler-test command recognized. Doing something." << std::endl;
