@@ -8,8 +8,48 @@
 #include <ctime>
 #include <unordered_map>
 #include <iomanip>
+#include <regex>
+
+class ScreenInterface{
+    static const int SCREENSIZE = 53;
+
+public:
+    void printBorder(std::string pos="mid"){
+        std::cout << (pos == "top"? "╔" : (pos == "bottom"? "╚" : "╠") );
+        for(int i=0; i< SCREENSIZE; i++){
+            std::cout << "═";
+        }
+        std::cout << (pos == "top" ? "╗" : (pos == "bottom" ? "╝": "╣") ) << std::endl;
+    }
+
+    // Helper function to strip ANSI codes
+    std::string stripAnsiCodes(const std::string& str) {
+        return std::regex_replace(str, std::regex("\033\\[[0-9;]*m"), "");
+    }
+
+    void printMessage(std::string message=""){
+
+        std:: string plainText = message;
+        message = stripAnsiCodes(message);
+        int spaceLen = SCREENSIZE - message.length();
+
+        std::cout << "║ ";
+        for (int i=0; i < spaceLen; i++){
+
+            std::cout << (i == 2 ? plainText : " ");
+
+        }
+        std::cout << "║" << std::endl;
+
+    }
+
+};
 
 class Console {
+
+private:
+    ScreenInterface SI = ScreenInterface();
+
 public:
     std::string name;
     int currentLine;
@@ -35,12 +75,21 @@ public:
         std::string input;
         while (true) {
             system("cls");  // clear screen
-            std::cout << "\033[32m" << "=== Screen: " << name << " ===\033[0m\n";
-            std::cout << "Process: " << name << "\n";
-            std::cout << "Instruction: Line " << currentLine + 1 << " / " << totalLines << "\n";
-            std::cout << "Created at: " << timestamp << "\n";
-            std::cout << "\nType 'exit' to return to the main menu.\n";
-            std::cout << "\033[36mScreen> \033[0m";
+            SI.printBorder("top");
+
+            SI.printMessage("\033[33mScreen: " + name + "\033[0m");
+            SI.printMessage("\033[32mProcess: " + name + "\033[0m");
+            SI.printMessage("\033[32mInstruction: Line " + std::to_string(currentLine + 1) + " / " + std::to_string(totalLines) + "\033[0m");
+            SI.printMessage("\033[32mCreated at: " + timestamp + "\033[0m");
+            SI.printMessage();
+            SI.printMessage();
+            SI.printMessage();
+            
+            SI.printBorder("bottom");
+
+            
+            std::cout << "\nType 'exit' to stop the process.\n";
+            std::cout << "\033[33mScreen> \033[0m";
 
             std::getline(std::cin, input);
             if (input == "exit") break;
