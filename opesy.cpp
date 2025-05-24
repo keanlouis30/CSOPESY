@@ -16,7 +16,15 @@ public:
     int totalLines;
     std::string timestamp;
 
-    Console(const std::string& n, int total) : name(n), currentLine(0), totalLines(total) {
+    
+    Console() : name(""), currentLine(0), totalLines(0) { 
+        time_t now = time(nullptr);
+        char buf[100];
+        strftime(buf, sizeof(buf), "%m/%d/%Y, %I:%M:%S %p", localtime(&now));
+        timestamp = buf;
+    }
+
+    Console(const std::string& n, int total) : name(n), currentLine(0), totalLines(total) { 
         time_t now = time(nullptr);
         char buf[100];
         strftime(buf, sizeof(buf), "%m/%d/%Y, %I:%M:%S %p", localtime(&now));
@@ -67,6 +75,8 @@ void printBanner(){
     std::cout.flush();
 }
 
+std::unordered_map<std::string, Console> screens;
+
 int main(){
     printBanner();
     std::string input, screenName;
@@ -80,16 +90,23 @@ int main(){
             std::cout << "initialize command recognized. Doing something." << std::endl;
         }
         else if (input.rfind("screen", 0) == 0) {
-            if(input.rfind("screen -s", 0) == 0){
-                screenName = input.substr(10);
-                Console Screen = Console(screenName, 20);
-                Screen.display();
-            } else if (input.rfind("screen -r", 0) == 0){
-                screenName = input.substr(10);
-                Console Screen = Console(screenName, 20);
-                Screen.display();
-            }else{
-                std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
+            if (input.rfind("screen -s ", 0) == 0) {
+                screenName = input.substr(10); 
+                if (screens.find(screenName) != screens.end()) {
+                    std::cout << "Screen \"" << screenName << "\" already exists.\n";
+                } else {
+                    screens.emplace(screenName, Console(screenName, 20));
+                    screens[screenName].display();
+                }
+            } else if (input.rfind("screen -r ", 0) == 0) {
+                screenName = input.substr(10); 
+                if (screens.find(screenName) != screens.end()) {
+                    screens[screenName].display();  
+                } else {
+                    std::cout << "\033[31mNo screen found with name \"" << screenName << "\". \033[0m\n";
+                }
+            } else {
+                std::cout << "\033[31m" << "Enter 'screen -s <name>' to create a new screen or 'screen -r <name>' to resume a screen" << "\033[0m" << std::endl;
             }
         }
         else if (input == "scheduler-test") {
