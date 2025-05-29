@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <iomanip>
 #include <regex>
+#include <windows.h>
+#include <vector>
 
 class ScreenInterface{
     static const int SCREENSIZE = 53;
@@ -39,6 +41,101 @@ public:
 
     }
 
+};
+
+class NvidiaSMIInterface {
+private:
+    //used to control and restore text formatting in the Windows terminal
+    HANDLE hConsole;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    
+    struct ProcessInfo {
+        int pid;
+        std::string type;
+        std::string processName;
+        std::string memoryUsage;
+    };
+    
+    std::vector<ProcessInfo> dummyProcesses = {
+        {1234, "C+G", "chrome.exe", "512MiB"},
+        {5678, "C", "python.exe", "1024MiB"},
+        {9012, "G", "game.exe", "2048MiB"},
+        {3456, "C", "blender.exe", "768MiB"},
+        {7890, "G", "obs64.exe", "256MiB"}
+    };
+
+public:
+    NvidiaSMIInterface() {
+        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        GetConsoleScreenBufferInfo(hConsole, &csbi);
+        
+        //for proper display of characters
+        SetConsoleOutputCP(CP_UTF8);
+    }
+    //created a function for colors 
+    void setColor(int color) {
+        SetConsoleTextAttribute(hConsole, color);
+    }
+    
+    void resetColor() {
+        SetConsoleTextAttribute(hConsole, csbi.wAttributes);
+    }
+    
+    //gets the current time
+    std::string getCurrentTime() {
+        time_t now = time(nullptr);
+        char buf[100];
+        strftime(buf, sizeof(buf), "%a %b %d %H:%M:%S %Y", localtime(&now));
+        return std::string(buf);
+    }
+    
+    void printHeader() {
+        setColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        std::cout << getCurrentTime() << std::endl;
+        resetColor();
+        
+        std::cout << "+----------------------------------------------------------------------------------------+" << std::endl;
+        std::cout << "| NVIDIA-SMI 535.104.05             Driver Version: 535.104.05    CUDA Version: 12.2     |" << std::endl;
+        std::cout << "|-------------------------------+----------------------+---------------------------------|" << std::endl;
+        std::cout << "| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC            |" << std::endl;
+        std::cout << "| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M.            |" << std::endl;
+        std::cout << "|                               |                      |               MIG M.            |" << std::endl;
+        std::cout << "|===============================+======================+=================================|" << std::endl;
+    }
+    
+    void printGPUInfo() {
+        std::cout << "|   0  NVIDIA GeForce RTX 4070   Off| 00000000:01:00.0 On |                  N/A         |" << std::endl;
+        std::cout << "| 45%   65C    P2    180W / 200W |   4096MiB / 12288MiB |     85%      Default           |" << std::endl;
+        std::cout << "|                               |                      |                  N/A            |" << std::endl;
+        std::cout << "+-------------------------------+----------------------+---------------------------------+" << std::endl;
+        std::cout << std::endl;
+    }
+    
+    void printProcessesHeader() {
+        std::cout << "+----------------------------------------------------------------------------------------+" << std::endl;
+        std::cout << "| Processes:                                                       GPU Memory            |" << std::endl;
+        std::cout << "|  GPU       PID   Type   Process name                             Usage                 |" << std::endl;
+        std::cout << "|========================================================================================|" << std::endl;
+    }
+    
+    //gets the data from the dummyProcesses
+    void printProcesses() {
+        for (const auto& process : dummyProcesses) {
+            std::cout << "|    0      " << std::setw(17) << std::right << process.pid 
+                      << "     " << std::setw(3) << std::left << process.type 
+                      << "   " << std::setw(40) << std::left << process.processName 
+                      << std::setw(8) << std::right << process.memoryUsage << " |" << std::endl;
+        }
+        std::cout << "+----------------------------------------------------------------------------------------+" << std::endl;
+    }
+    
+    void displayNvidiaSMI() {
+        printHeader();
+        printGPUInfo();
+        printProcessesHeader();
+        printProcesses();
+        std::cout << std::endl;
+    }
 };
 
 class Console {
@@ -125,6 +222,7 @@ std::unordered_map<std::string, Console> screens;
 int main(){
     printBanner();
     std::string input, screenName;
+    NvidiaSMIInterface nvInterface;
 
     do{
         std::cout << "\033[36m" << "Command> " << "\033[0m";
@@ -163,6 +261,10 @@ int main(){
         else if (input == "report-util") {
             std::cout << "report-util command recognized. Doing something." << std::endl;
         }
+        else if (input == "nvidia-smi") {
+            std::cout << std::endl;
+            nvInterface.displayNvidiaSMI();
+        }
         else if (input == "clear") {
             system("cls");
             std::cout.flush();
@@ -175,6 +277,7 @@ int main(){
             std::cout << "  scheduler-test- Test the scheduler" << std::endl;
             std::cout << "  scheduler-stop- Stop the scheduler" << std::endl;
             std::cout << "  report-util   - Report system utilization" << std::endl;
+            std::cout << "  nvidia-smi    - Display GPU information (dummy)" << std::endl;
             std::cout << "  clear         - Clear the screen" << std::endl;
             std::cout << "  exit          - Exit the application" << std::endl;
         }
