@@ -57,11 +57,11 @@ private:
     };
     
     std::vector<ProcessInfo> dummyProcesses = {
-        {1234, "C+G", "chrome.exe", "512MiB"},
-        {5678, "C", "python.exe", "1024MiB"},
-        {9012, "G", "game.exe", "2048MiB"},
-        {3456, "C", "blender.exe", "768MiB"},
-        {7890, "G", "obs64.exe", "256MiB"}
+        {1368, "C+G", "C:\\Windows\\System32\\dwm.exe", "N/A"},
+        {5678, "C", "C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", "1024MiB"},
+        {9012, "G", "C:\\Riot Games\\VALORANT\\live\\VALORANT-Win64-Shipping.exe", "2048MiB"},
+        {3456, "C", "C:\\Program Files\\Blender Foundation\\Blender 3.6\\blender.exe", "768MiB"},
+        {7890, "G", "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe", "256MiB"}
     };
 
 public:
@@ -72,6 +72,7 @@ public:
         //for proper display of characters
         SetConsoleOutputCP(CP_UTF8);
     }
+    
     //created a function for colors 
     void setColor(int color) {
         SetConsoleTextAttribute(hConsole, color);
@@ -118,13 +119,28 @@ public:
         std::cout << "|========================================================================================|" << std::endl;
     }
     
-    //gets the data from the dummyProcesses
+    // Helper function to wrap long process names
+    std::string formatProcessName(const std::string& processName, int maxWidth = 45) {
+        if (processName.length() <= maxWidth) {
+            return processName;
+        }
+        
+        // If too long, truncate and add "..." at the beginning (like nvidia-smi does)
+        return "..." + processName.substr(processName.length() - maxWidth + 3);
+    }
+    
+    //gets the data from the dummyProcesses with proper formatting
     void printProcesses() {
         for (const auto& process : dummyProcesses) {
-            std::cout << "|    0      " << std::setw(17) << std::right << process.pid 
-                      << "     " << std::setw(3) << std::left << process.type 
-                      << "   " << std::setw(40) << std::left << process.processName 
-                      << std::setw(8) << std::right << process.memoryUsage << " |" << std::endl;
+            std::string formattedName = formatProcessName(process.processName);
+            
+            // Format: |  GPU    PID  Type  Process name                              Usage    |
+            std::cout << "|    0      ";
+            std::cout << std::setw(4) << std::right << process.pid << "      ";
+            std::cout << std::setw(3) << std::left << process.type << "   ";
+            std::cout << std::setw(45) << std::left << formattedName;
+            std::cout << std::setw(9) << std::right << process.memoryUsage;
+            std::cout << "       |" << std::endl;
         }
         std::cout << "+----------------------------------------------------------------------------------------+" << std::endl;
     }
@@ -269,7 +285,7 @@ int main(){
             system("cls");
             std::cout.flush();
             printBanner(); 
-        }
+        } 
         else if (input == "help") {
             std::cout << "\033[35m" << "Available commands:" << "\033[0m" << std::endl;
             std::cout << "  initialize    - Initialize the system" << std::endl;
