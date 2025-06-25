@@ -18,6 +18,8 @@ enum Status
     RUNNING,
     FINISHED
 };
+
+
 class Config{
 	public:
 		int num_cpu;
@@ -421,12 +423,17 @@ ReadyQueue g_ready_queue;
 ProcessCollection g_running_list;
 ProcessCollection g_finished_list;
 std::atomic<bool> g_shutdown = false;
+Config g_config;
+bool g_initialized = false;
 
 int main()
 {
+    if(!g_config.loadFromFile("config.txt")){
+	    std::cerr << "Warning: Could not load file, using the default values" <<std::endl;
+    }
     printBanner();
 
-    const int NUM_CORES = 4;
+    const int NUM_CORES = g_config.num_cpu;
     std::vector<CPU_Core *> cpu_cores;
     std::vector<std::thread> core_threads;
 
