@@ -1,0 +1,8 @@
+﻿  Main.cpp
+D:\Lia\School\DLSU\Term 3 Year 3\CSOPESY\CSOPESY\Process.h(20,61): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file '../Main.cpp')
+  
+D:\Lia\School\DLSU\Term 3 Year 3\CSOPESY\CSOPESY\ScreenInterface.h(29,22): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file '../Main.cpp')
+  
+  Project1.vcxproj -> D:\Lia\School\DLSU\Term 3 Year 3\CSOPESY\CSOPESY\Project1\x64\Debug\Project1.exe
