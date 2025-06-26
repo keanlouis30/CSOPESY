@@ -20,6 +20,7 @@
 #include "ReadyQueue.h"
 #include "ProcessCollection.h"
 #include "Scheduler.h"
+#include "RoundRobin.h"
 
 
 void printBanner()

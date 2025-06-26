@@ -1,3 +1,4 @@
+#pragma once    
 class CPU_Core
 {
 private:
@@ -35,6 +36,11 @@ public:
 
                     execute_command(*p);
                     p->commandCounter++;
+                    p->quantum_remaining--;
+                }
+                else
+                {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
 
                 if (p->commandCounter >= p->totalCommands)
@@ -74,7 +80,8 @@ public:
         return current_process == nullptr;
     }
 
-    int get_id() {
+    int get_id()
+    {
         return core_id;
     }
 

@@ -1,10 +1,8 @@
 #include "Main.h"
 
-
 int main()
 {
     printBanner();
-    
 
     const int NUM_CORES = g_config.num_cpu;
     std::vector<CPU_Core *> cpu_cores;
@@ -15,14 +13,30 @@ int main()
         cpu_cores.push_back(new CPU_Core(i, g_finished_list, g_shutdown));
     }
 
-    Scheduler scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
+    std::thread scheduler_thread;
 
-    std::thread scheduler_thread(&Scheduler::run, &scheduler);
+    if (!g_config.loadFromFile("config.txt"))
+    {
+        std::cerr << "Warning: Could not load config file, using default values" << std::endl;
+    }
+
+    if (g_config.scheduler == "rr")
+    {
+        RoundRobinScheduler *rr_scheduler = new RoundRobinScheduler(g_ready_queue, g_running_list, g_finished_list, cpu_cores, g_config, g_shutdown);
+        scheduler_thread = std::thread(&RoundRobinScheduler::run, rr_scheduler);
+        std::cout << "\033[32m[System] Round Robin Scheduler and " << g_config.num_cpu << " CPU cores are now running.\033[0m\n\n";
+    }
+    else
+    {
+        Scheduler *fcfs_scheduler = new Scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
+        scheduler_thread = std::thread(&Scheduler::run, fcfs_scheduler);
+        std::cout << "\032[32m[System] FCFS Scheduler and " << g_config.num_cpu << " CPU cores are now running.\033[0m\n\n";
+    }
+
     for (auto *core : cpu_cores)
     {
         core_threads.emplace_back(&CPU_Core::run, core);
     }
-    std::cout << "\033[32m[System] FCFS Scheduler and " << NUM_CORES << " CPU cores are now running in the background.\033[0m\n\n";
 
     std::string input, screenName;
     int process_id_counter = 1;
@@ -75,19 +89,19 @@ int main()
                 }
                 g_initialized = true;
                 std::cout << "\033[32m[System] System initialized successfully.\033[0m" << std::endl;
-                
+
                 // Here you can add any initialization logic like creating test processes
                 // For example, create some test processes:
                 for (int i = 1; i <= 5; i++)
                 {
                     std::vector<std::string> commands;
                     int num_commands = g_config.min_ins + (rand() % (g_config.max_ins - g_config.min_ins + 1));
-                    
+
                     for (int j = 0; j < num_commands; j++)
                     {
                         commands.push_back("Hello world from process_" + std::to_string(i));
                     }
-                    
+
                     Process new_process("process_" + std::to_string(i), process_id_counter++, commands);
                     g_ready_queue.push(new_process);
                 }
@@ -116,8 +130,9 @@ int main()
                     for (const auto &p : running)
                     {
                         std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
-                                << "Core: " << p.assigned_core_id << "\t"
-                                << p.commandCounter << " / " << p.totalCommands << "\n";
+                                  << "Core: " << p.assigned_core_id << "\t"
+                                  << "Quantum: " << p.quantum_remaining << "/" << p.quantum_max << "\t"
+                                  << p.commandCounter << " / " << p.totalCommands << "\n";
                     }
                 }
                 std::cout << "--------------------------------------------------------\n";
@@ -133,8 +148,8 @@ int main()
                     for (const auto &p : finished)
                     {
                         std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
-                                << "Finished\t"
-                                << p.commandCounter << " / " << p.totalCommands << "\n";
+                                  << "Finished\t"
+                                  << p.commandCounter << " / " << p.totalCommands << "\n";
                     }
                 }
                 std::cout << "--------------------------------------------------------\n\n";
@@ -188,7 +203,7 @@ int main()
         {
             std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
         }
-        
+
     } while (input != "exit");
 
     std::cout << "\n\033[33m[System] Shutdown initiated. Waiting for all tasks to complete...\033[0m\n";

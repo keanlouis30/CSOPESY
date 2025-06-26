@@ -1,6 +1,6 @@
 To run:
-g++ opesy.cpp -o opesy
-./opesy
+g++ Main.cpp -o main
+./main
 
 #### config.txt
 

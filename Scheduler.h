@@ -1,3 +1,4 @@
+#pragma once
 #include "CPU_Core.h"
 class Scheduler
 {
@@ -12,13 +13,11 @@ public:
         : ready_queue(ready), running_list(running), cpu_cores(cores), shutdown_signal(shutdown) {}
 
     void run()
-{
-    while (!shutdown_signal)
     {
         bool assigned;
         if (!ready_queue.isEmpty())
         {
-            // Wait until a core is idle 
+            // Wait until a core is idle
             for (auto *core : cpu_cores)
             {
                 if (core->is_idle()) // if there is a core
@@ -34,9 +33,10 @@ public:
                             assigned = true;
                         }
                     }
-                    break;  // one process at a time for FCFS
+                    break; // one process at a time for FCFS
                 }
-                else {
+                else
+                {
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
             }
@@ -48,7 +48,7 @@ public:
 
         {
             std::lock_guard<std::mutex> lock(running_list.mtx);
-            running_list.processes.clear();  // clear running processes list
+            running_list.processes.clear(); // clear running processes list
 
             for (auto *core : cpu_cores)
             {
@@ -60,7 +60,4 @@ public:
             }
         }
     }
-}
-
-
 };

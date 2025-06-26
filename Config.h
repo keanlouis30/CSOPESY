@@ -1,3 +1,4 @@
+#pragma once
 class Config{
 	public:
 		int num_cpu;

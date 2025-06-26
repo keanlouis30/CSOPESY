@@ -1,3 +1,4 @@
+#pragma once
 #include "Status.h"
 class Process{
     Config config;
