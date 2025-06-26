@@ -95,8 +95,11 @@ private:
         outfile.open(filename, std::ios_base::app);
 
         time_t now = time(nullptr);
+        struct tm timeInfo;
         char buf[100];
-        strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
+
+        localtime_s(&timeInfo, &now);  // Safer conversion to local time
+        strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", &timeInfo);
 
         outfile << "(" << buf << ") Core:" << core_id << " \"Hello world from " << p.name << "\"" << std::endl;
         outfile.close();

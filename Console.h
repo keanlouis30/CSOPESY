@@ -15,17 +15,21 @@ public:
     Console() : name(""), currentLine(0), totalLines(0)
     {
         time_t now = time(nullptr);
+        struct tm timeInfo;
         char buf[100];
-        strftime(buf, sizeof(buf), "%m/%d/%Y, %I:%M:%S %p", localtime(&now));
-        timestamp = buf;
+
+        localtime_s(&timeInfo, &now);  // Safer conversion to local time
+        strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", &timeInfo);
     }
 
     Console(const std::string &n, int total) : name(n), currentLine(0), totalLines(total)
     {
         time_t now = time(nullptr);
+        struct tm timeInfo;
         char buf[100];
-        strftime(buf, sizeof(buf), "%m/%d/%Y, %I:%M:%S %p", localtime(&now));
-        timestamp = buf;
+
+        localtime_s(&timeInfo, &now);  // Safer conversion to local time
+        strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", &timeInfo);
     }
 
     void display()

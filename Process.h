@@ -21,9 +21,11 @@ class Process{
             status(s), commandCounter(0), assigned_core_id(-1)
         {
             time_t now = time(nullptr);
+            struct tm timeInfo;
             char buf[100];
-            strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
-            creation_timestamp = buf;
+
+            localtime_s(&timeInfo, &now);  // Safer conversion to local time
+            strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", &timeInfo);
         }
 
         void create(){
