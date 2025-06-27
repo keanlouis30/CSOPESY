@@ -25,8 +25,6 @@ class Process{
             creation_timestamp = buf;
         }
 
-        void create(){
-
-        }
+        void create();
 
 };

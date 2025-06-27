@@ -1,30 +1,36 @@
 #include "Main.h"
 
+void printBanner(){
+
+    system("chcp 65001 > nul");
+
+    std::cout << "\033[33m";
+    std::cout << R"(
+
+ ██████╗███████╗ ██████╗ ██████╗ ███████╗███████╗██╗   ██╗    ███████╗ ██╗██╗  ██╗     ██████╗  ██╗ ██████╗ 
+██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝╚██╗ ██╔╝    ██╔════╝███║██║  ██║    ██╔════╝ ███║██╔═████╗
+██║     ███████╗██║   ██║██████╔╝█████╗  ███████╗ ╚████╔╝     ███████╗╚██║███████║    ██║  ███╗╚██║██║██╔██║
+██║     ╚════██║██║   ██║██╔═══╝ ██╔══╝  ╚════██║  ╚██╔╝      ╚════██║ ██║╚════██║    ██║   ██║ ██║████╔╝██║
+╚██████╗███████║╚██████╔╝██║     ███████╗███████║   ██║       ███████║ ██║     ██║    ╚██████╔╝ ██║╚██████╔╝
+ ╚═════╝╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═╝     ╚═╝     ╚═════╝  ╚═╝ ╚═════╝ 
+                                                                                                            
+    )" << std::endl;
+
+    std::cout << "\033[1m" << "\033[32m" << "Hello, welcome to CSOPESY S14 Group 10's Command-Line Interface" << "\033[0m" << std::endl;
+    std::cout << "Type" << " \033[35m" << "[help]" << "\033[0m" << " for the basic instructions of using the CLI\n"
+              << std::endl;
+    std::cout.flush();
+}
+
 
 int main()
 {
     printBanner();
-    
-
-    const int NUM_CORES = g_config.num_cpu;
     std::vector<CPU_Core *> cpu_cores;
     std::vector<std::thread> core_threads;
-
-    for (int i = 0; i < NUM_CORES; ++i)
-    {
-        cpu_cores.push_back(new CPU_Core(i, g_finished_list, g_shutdown));
-    }
-
-    Scheduler scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
-
-    std::thread scheduler_thread(&Scheduler::run, &scheduler);
-    for (auto *core : cpu_cores)
-    {
-        core_threads.emplace_back(&CPU_Core::run, core);
-    }
-    std::cout << "\033[32m[System] FCFS Scheduler and " << NUM_CORES << " CPU cores are now running in the background.\033[0m\n\n";
-
     std::string input, screenName;
+    Scheduler scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
+    std::thread scheduler_thread(&Scheduler::run, &scheduler);
     int process_id_counter = 1;
 
     do
@@ -48,7 +54,7 @@ int main()
                 std::cout << "  screen -ls    - Lists all running and finished processes." << std::endl;
                 std::cout << "  screen -s <name> - Create a new screen/process." << std::endl;
                 std::cout << "  screen -r <name> - Resume/view an existing screen." << std::endl;
-                std::cout << "  scheduler-test - Test the scheduler." << std::endl;
+                std::cout << "  scheduler-start - Start the scheduler." << std::endl;
                 std::cout << "  scheduler-stop - Stop the scheduler." << std::endl;
                 std::cout << "  report-util   - Generate utilization report." << std::endl;
                 std::cout << "  clear         - Clear the screen" << std::endl;
@@ -73,25 +79,21 @@ int main()
                 {
                     std::cerr << "Warning: Could not load config file, using default values" << std::endl;
                 }
-                g_initialized = true;
-                std::cout << "\033[32m[System] System initialized successfully.\033[0m" << std::endl;
-                
-                // Here you can add any initialization logic like creating test processes
-                // For example, create some test processes:
-                for (int i = 1; i <= 5; i++)
+                g_config.loadFromFile("config.txt ");
+                const int NUM_CORES = g_config.num_cpu;
+
+                for (int i = 0; i < NUM_CORES; ++i)
                 {
-                    std::vector<std::string> commands;
-                    int num_commands = g_config.min_ins + (rand() % (g_config.max_ins - g_config.min_ins + 1));
-                    
-                    for (int j = 0; j < num_commands; j++)
-                    {
-                        commands.push_back("Hello world from process_" + std::to_string(i));
-                    }
-                    
-                    Process new_process("process_" + std::to_string(i), process_id_counter++, commands);
-                    g_ready_queue.push(new_process);
+                    cpu_cores.push_back(new CPU_Core(i, g_finished_list, g_shutdown));
                 }
-                std::cout << "\033[32m[System] Created 5 test processes.\033[0m" << std::endl;
+
+                for (auto *core : cpu_cores)
+                {
+                    core_threads.emplace_back(&CPU_Core::run, core);
+                }
+                std::cout << "\033[32m[System] FCFS Scheduler and " << NUM_CORES << " CPU cores are now running in the background.\033[0m\n\n";
+                            g_initialized = true;
+                std::cout << "\033[32m[System] System initialized successfully.\033[0m" << std::endl;
             }
         }
         // Commands available only after initialization
@@ -169,15 +171,15 @@ int main()
                 std::cout << "\033[31m" << "Enter 'screen -ls' to list processes, 'screen -s <name>' to create, or 'screen -r <name>' to resume." << "\033[0m" << std::endl;
             }
         }
-        else if (input == "scheduler-test")
+        else if (input == "scheduler-start")
         {
-            std::cout << "Scheduler test command executed." << std::endl;
-            // Add your scheduler test logic here
+            std::cout << "Scheduler start command executed." << std::endl;
+            void startProcessGeneration();
         }
         else if (input == "scheduler-stop")
         {
-            std::cout << "Scheduler stop command executed." << std::endl;
-            // Add your scheduler stop logic here
+            std::cout << "Scheduler stop command executed." << std::endl; 
+            void endProcessGeneration();
         }
         else if (input == "report-util")
         {
