@@ -4,39 +4,41 @@
 #include "ReadyQueue.h"
 #include "ProcessCollection.h"
 
-class Scheduler 
+class FCFSScheduler
 {
 private:
-    ReadyQueue &ready_queue;
-    ProcessCollection &running_list;
-    ProcessCollection &finished_list;
-    std::vector<CPU_Core *> &cpu_cores;
-    std::atomic<bool> &shutdown_signal;
+    ReadyQueue& ready_queue;
+    ProcessCollection& running_list;
+    ProcessCollection& finished_list;
+    std::vector<CPU_Core*>& cpu_cores;
+    std::atomic<bool>& shutdown_signal;
 
 public:
-    Scheduler(ReadyQueue &ready, ProcessCollection &running, ProcessCollection &finished, std::vector<CPU_Core *> &cores, std::atomic<bool> &shutdown)
-        : ready_queue(ready), running_list(running), finished_list(finished), cpu_cores(cores), shutdown_signal(shutdown) {}
+    FCFSScheduler(ReadyQueue& ready, ProcessCollection& running, ProcessCollection& finished, std::vector<CPU_Core*>& cores, std::atomic<bool>& shutdown)
+        : ready_queue(ready), running_list(running), finished_list(finished), cpu_cores(cores), shutdown_signal(shutdown) {
+    }
 
     void run()
     {
         while (!shutdown_signal)
         {
-            
-            for (auto *core : cpu_cores)
+            //std::cout << "FCFS printing";
+
+            for (auto* core : cpu_cores)
             {
                 std::lock_guard<std::mutex> core_lock(core->core_mtx);
                 if (core->current_process != nullptr && core->current_process->commandCounter >= core->current_process->totalCommands)
                 {
                     core->current_process->status = FINISHED;
                     finished_list.add(*core->current_process);
-                    core->current_process = nullptr; 
+                    core->current_process = nullptr;
                 }
             }
 
-           
+
             if (!ready_queue.isEmpty())
             {
-                for (auto *core : cpu_cores)
+                for (auto* core : cpu_cores)
                 {
                     if (core->is_idle())
                     {
@@ -46,16 +48,16 @@ public:
                             next_process.assigned_core_id = core->get_id();
                             core->assign_process(next_process);
                         }
-                       
+
                     }
                 }
             }
 
-          
+
             {
                 std::lock_guard<std::mutex> lock(running_list.mtx);
                 running_list.processes.clear();
-                for (auto *core : cpu_cores)
+                for (auto* core : cpu_cores)
                 {
                     std::lock_guard<std::mutex> core_lock(core->core_mtx);
                     if (core->current_process != nullptr)

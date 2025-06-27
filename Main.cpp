@@ -28,8 +28,8 @@ int main()
     }
     else // Default to FCFS
     {
-        Scheduler *fcfs_scheduler = new Scheduler(g_ready_queue, g_running_list, g_finished_list, cpu_cores, g_shutdown);
-        scheduler_thread = std::thread(&Scheduler::run, fcfs_scheduler);
+        FCFSScheduler *fcfs_scheduler = new FCFSScheduler(g_ready_queue, g_running_list, g_finished_list, cpu_cores, g_shutdown);
+        scheduler_thread = std::thread(&FCFSScheduler::run, fcfs_scheduler);
         std::cout << "\033[32m[System] FCFS Scheduler and " << g_config.num_cpu << " CPU cores are now running.\033[0m\n\n";
     }
 
