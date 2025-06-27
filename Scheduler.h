@@ -17,9 +17,11 @@ private:
     {
         for (auto* core : cpu_cores)
         {
+            
             std::lock_guard<std::mutex> core_lock(core->core_mtx);
             if (core->current_process != nullptr && core->current_process->commandCounter >= core->current_process->totalCommands)
             {
+				std::cout << "Core " << core->get_id() << " finished process: " << core->current_process->name << std::endl;
                 core->current_process->status = FINISHED;
                 finished_list.add(*core->current_process);
                 core->current_process = nullptr;
@@ -35,6 +37,7 @@ private:
             {
                 if (core->is_idle())
                 {
+					std::cout << "Core " << core->get_id() << " is idle, assigning process." << std::endl;
                     Process next_process("", -1);
                     if (ready_queue.pop(next_process))
                     {
