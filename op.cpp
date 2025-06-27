@@ -91,6 +91,7 @@ void printBanner(){
 int main()
 {
     printBanner();
+    std::unordered_map<std::string, std::function<void()>> screens; //changed this because Console is static
     std::vector<CPU_Core*> cpu_cores; 
     std::vector<std::thread> core_threads;
     Scheduler scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
@@ -133,7 +134,7 @@ int main()
         std::cout << "  clear         - Clear the screen" << std::endl;
         std::cout << "  exit          - Exit the application." << std::endl;
     } else {
-        std::cout << "\033[31mSystem not initialized. Please run 'initialize' first.\033[0m" << std::endl;
+        std::cout << "\033[31mUnknown Command. Please run 'initialize' first.\033[0m" << std::endl;
     }
 
     } while (!initialized);
@@ -209,11 +210,16 @@ int main()
                 if (g_ready_queue.exists(screenName) || g_running_list.exists(screenName) || g_finished_list.exists(screenName)) {
                     std::cout << "Process or screen \"" << screenName << "\" already exists.\n";
                 } else {
-                    std::cout << "Creating process " << screenName << "...\n";
                     Process new_process(screenName, process_id_counter++, g_config);
                     g_ready_queue.push(new_process);
-                    std::cout << "Process " << screenName << " created and added to the ready queue.\n";
+
+                    screens.emplace(screenName, [=]() {
+                        Console::display(screenName, g_ready_queue, g_running_list, g_finished_list);
+                    });
+
+                    screens[screenName]();
                 }
+
             }
             else if (input.rfind("screen -r ", 0) == 0)
             {
