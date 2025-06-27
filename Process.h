@@ -7,6 +7,7 @@
 #include <ctime>
 #include "Status.h"
 #include "Config.h"
+#include "Globals.h"
 
 class Process {
 public:

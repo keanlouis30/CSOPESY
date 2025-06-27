@@ -1,4 +1,16 @@
+#pragma once
+
+#include <vector>
+#include <memory>
+#include <atomic>
+#include <thread>
+#include <chrono>
+
 #include "CPU_Core.h"
+#include "Globals.h"
+#include "Process.h"
+
+
 class Scheduler
 {
 private:

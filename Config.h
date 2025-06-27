@@ -1,3 +1,8 @@
+#pragma once
+#include <string>
+#include <fstream>
+#include <iostream>
+
 class Config{
 	public:
 		int num_cpu;

@@ -1,3 +1,17 @@
+#pragma once
+
+#include "ProcessCollection.h" 
+#include <atomic>
+#include "Process.h"
+#include <mutex>
+#include <memory>
+#include <thread>
+#include <chrono>
+#include "Config.h"
+#include "Status.h"
+#include "Globals.h"
+
+
 class CPU_Core
 {
 private:

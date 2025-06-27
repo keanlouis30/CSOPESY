@@ -1,18 +1,13 @@
 #include "Process.h"
+#include "Utils.h"
 #include <random>
 #include <sstream>
 #include <iostream>
 #include <functional>
 
-// Helper function to get a random number in a thread-safe way
-int get_random(int min, int max) {
-    static thread_local std::mt19937 generator(std::random_device{}());
-    std::uniform_int_distribution<int> distribution(min, max);
-    return distribution(generator);
-}
 
 Process::Process(std::string n, int p, const Config& config)
-    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1) {
+: name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1) {
     
     // Set creation timestamp
     time_t now = time(nullptr);

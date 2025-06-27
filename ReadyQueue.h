@@ -1,3 +1,10 @@
+#pragma once
+#include <queue>
+#include <mutex>
+#include <string>
+#include "Process.h"
+#include "Globals.h"
+
 
 class ReadyQueue
 {
