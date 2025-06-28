@@ -27,7 +27,6 @@ Process::Process(std::string n, int p, const Config& config)
 void Process::generate_instructions(const Config& config) {
     int num_instructions = get_random(config.min_ins, config.max_ins);
     int max_nesting = 3;
-    int total_generated = 0;
     int expanded_count = 0; // Track actual expanded instructions
     
     auto get_unique_var = [this](int& var_counter) {
@@ -42,7 +41,9 @@ void Process::generate_instructions(const Config& config) {
     generate = [&](int nesting, int& remaining, int& expanded) {
         int var_counter = (int)variables.size();
         while (remaining > 0 && expanded < num_instructions) {
-            int instruction_type = get_random(0, 5); // 0:PRINT, 1:DECLARE, 2:ADD, 3:SUBTRACT, 4:SLEEP, 5:FOR
+            // If the remaining budget is too small for a FOR loop, only generate single instructions
+            bool can_try_for = (nesting < max_nesting && remaining >= 3 && expanded < num_instructions - 2);
+            int instruction_type = get_random(0, can_try_for ? 5 : 4); // 0-4 if FOR not possible, 0-5 if possible
             std::stringstream ss;
             switch (instruction_type) {
                 case 0: { // PRINT
@@ -136,41 +137,44 @@ void Process::generate_instructions(const Config& config) {
                     break;
                 }
                 case 5: { // FOR
-                    if (nesting < max_nesting && remaining > 1) {
-                        // Check if we have enough remaining instructions for a FOR loop
-                        // We need at least 3: FOR instruction, 1 body instruction, closing brace
-                        if (remaining >= 3 && expanded < num_instructions - 2) {
-                            int for_iterations = get_random(1, 2); // Keep iterations very low
-                            int body_instructions = 1; // Keep body size minimal
-                            
-                            // Check if this would exceed our expanded count
-                            // FOR instruction (1) + loop body instructions * iterations + closing brace (1)
+                    // Only generate FOR if it fits exactly in the remaining budget
+                    bool for_generated = false;
+                    for (int for_iterations = 2; for_iterations >= 1; --for_iterations) {
+                        for (int body_instructions = 1; body_instructions <= 2; ++body_instructions) {
                             int potential_expansion = 1 + (body_instructions * for_iterations) + 1;
-                            if (expanded + potential_expansion <= num_instructions) {
+                            if (potential_expansion <= (num_instructions - expanded) && potential_expansion <= remaining) {
                                 ss << "FOR " << for_iterations << " {";
                                 commands.push_back(ss.str());
                                 --remaining;
-                                ++expanded; // Count the FOR instruction
-                                
+                                ++expanded;
                                 int body_remaining = body_instructions;
                                 int body_expanded = 0;
                                 generate(nesting + 1, body_remaining, body_expanded);
                                 commands.push_back("}");
                                 remaining -= (body_instructions - body_remaining);
-                                
-                                // Account for the actual loop body instructions multiplied by iterations
-                                // Plus the closing brace
                                 expanded += (body_expanded * for_iterations) + 1;
+                                for_generated = true;
                                 break;
                             }
                         }
+                        if (for_generated) break;
                     }
-                    // If we reach here, FOR loop was not possible, so pick a different instruction type (0-4) and try that instead
-                    instruction_type = get_random(0, 4);
-                    // No break; fall through to try the new instruction type
-                    continue;
+                    if (!for_generated) {
+                        // If FOR can't fit, pick a different instruction type (0-4)
+                        instruction_type = get_random(0, 4);
+                        continue;
+                    }
+                    break;
                 }
             }
+        }
+        // If we exit the loop and haven't filled up to num_instructions, fill with PRINTs
+        while (expanded < num_instructions && remaining > 0) {
+            std::stringstream ss;
+            ss << "PRINT " << get_random(0, 1000);
+            commands.push_back(ss.str());
+            --remaining;
+            ++expanded;
         }
     };
     int remaining = num_instructions;
