@@ -167,8 +167,8 @@ int main()
         {
             if (input == "screen -ls")
             {
-                //system("cls");
-                system("clear");
+                system("cls");
+                // system("clear");
                 std::stringstream report;
                 // CPU Usage
                 int busy_cores = 0;
