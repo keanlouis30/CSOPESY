@@ -26,8 +26,11 @@ Process::Process(std::string n, int p, const Config& config)
 
 void Process::generate_instructions(const Config& config) {
     int num_instructions = get_random(config.min_ins, config.max_ins);
+    int min_instructions = config.min_ins;
+    int max_instructions = config.max_ins;
     int max_nesting = 3;
     int expanded_count = 0; // Track actual expanded instructions
+    commands.clear();
     
     auto get_unique_var = [this](int& var_counter) {
         std::string var_name;
@@ -41,7 +44,6 @@ void Process::generate_instructions(const Config& config) {
     generate = [&](int nesting, int& remaining, int& expanded) {
         int var_counter = (int)variables.size();
         while (remaining > 0 && expanded < num_instructions) {
-            // If the remaining budget is too small for a FOR loop, only generate single instructions
             bool can_try_for = (nesting < max_nesting && remaining >= 3 && expanded < num_instructions - 2);
             int instruction_type = get_random(0, can_try_for ? 5 : 4); // 0-4 if FOR not possible, 0-5 if possible
             std::stringstream ss;
@@ -87,7 +89,6 @@ void Process::generate_instructions(const Config& config) {
                     std::string op = (instruction_type == 2) ? "ADD" : "SUBTRACT";
                     int add_type = get_random(0, 3);
                     std::string arg1, arg2;
-                    // Helper to get or create a variable
                     auto get_or_create_var = [&](int& var_counter) {
                         if (!variables.empty() && get_random(0, 1)) {
                             auto it = variables.begin();
@@ -137,7 +138,6 @@ void Process::generate_instructions(const Config& config) {
                     break;
                 }
                 case 5: { // FOR
-                    // Only generate FOR if it fits exactly in the remaining budget
                     bool for_generated = false;
                     for (int for_iterations = 2; for_iterations >= 1; --for_iterations) {
                         for (int body_instructions = 1; body_instructions <= 2; ++body_instructions) {
@@ -160,7 +160,6 @@ void Process::generate_instructions(const Config& config) {
                         if (for_generated) break;
                     }
                     if (!for_generated) {
-                        // If FOR can't fit, pick a different instruction type (0-4)
                         instruction_type = get_random(0, 4);
                         continue;
                     }
@@ -168,16 +167,25 @@ void Process::generate_instructions(const Config& config) {
                 }
             }
         }
-        // If we exit the loop and haven't filled up to num_instructions, fill with PRINTs
-        while (expanded < num_instructions && remaining > 0) {
-            std::stringstream ss;
-            ss << "PRINT " << get_random(0, 1000);
-            commands.push_back(ss.str());
-            --remaining;
-            ++expanded;
-        }
     };
     int remaining = num_instructions;
     generate(0, remaining, expanded_count);
+
+    // Ensure minimum instruction count
+    while ((int)commands.size() < min_instructions) {
+        int instruction_type = get_random(0, 3); // 0:PRINT, 1:DECLARE, 2:ADD, 3:SUBTRACT
+        std::stringstream ss;
+        switch (instruction_type) {
+            case 0: ss << "PRINT " << get_random(0, 1000); break;
+            case 1: ss << "DECLARE var_" << commands.size() << " " << get_random(0, 1000); break;
+            case 2: ss << "ADD var_" << commands.size() << " " << get_random(0, 1000); break;
+            case 3: ss << "SUBTRACT var_" << commands.size() << " " << get_random(0, 1000); break;
+        }
+        commands.push_back(ss.str());
+    }
+    // Ensure maximum instruction count
+    if ((int)commands.size() > max_instructions) {
+        commands.resize(max_instructions);
+    }
     totalCommands = commands.size();
 }
