@@ -1,0 +1,528 @@
+﻿  oldmain.cpp
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\ScreenInterface.h(30,22): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'oldmain.cpp')
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(13,23): error C2079: 'report' uses undefined class 'std::basic_stringstream<char,std::char_traits<char>,std::allocator<char>>'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(14,12): error C2297: '<<': not valid as right operand has type 'const char [34]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(14,12): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,12): error C2297: '<<': not valid as right operand has type 'const char [18]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35): error C2297: '<<': not valid as right operand has type 'std::ios_base &(__cdecl *)(std::ios_base &)'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,49): error C2677: binary '<<': no global operator found which takes type 'std::_Smanip<std::streamsize>' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(24,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(25,12): error C2297: '<<': not valid as right operand has type 'const char [13]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(25,44): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(25,73): error C2297: '<<': not valid as right operand has type 'const char [3]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(25,73): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(28,12): error C2297: '<<': not valid as right operand has type 'const char [20]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(28,72): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(28,72): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,16): error C2297: '<<': not valid as right operand has type 'const char [10]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40): error C2297: '<<': not valid as right operand has type 'const char [9]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,54): error C2677: binary '<<': no global operator found which takes type 'const std::string' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(30,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(36,12): error C2297: '<<': not valid as right operand has type 'const char [22]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(36,76): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(36,76): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,16): error C2297: '<<': not valid as right operand has type 'const char [10]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40): error C2297: '<<': not valid as right operand has type 'const char [9]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,54): error C2677: binary '<<': no global operator found which takes type 'const std::string' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(38,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(41,12): error C2297: '<<': not valid as right operand has type 'const char [34]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\oldmain.cpp(41,12): warning C4552: '<<': result of expression not used
+  op.cpp
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\ScreenInterface.h(30,22): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'op.cpp')
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(15,23): error C2079: 'report' uses undefined class 'std::basic_stringstream<char,std::char_traits<char>,std::allocator<char>>'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(16,12): error C2297: '<<': not valid as right operand has type 'const char [34]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(16,12): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,12): error C2297: '<<': not valid as right operand has type 'const char [18]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35): error C2297: '<<': not valid as right operand has type 'std::ios_base &(__cdecl *)(std::ios_base &)'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,49): error C2677: binary '<<': no global operator found which takes type 'std::_Smanip<std::streamsize>' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(26,35):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(27,12): error C2297: '<<': not valid as right operand has type 'const char [13]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(27,44): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(27,73): error C2297: '<<': not valid as right operand has type 'const char [3]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(27,73): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(30,12): error C2297: '<<': not valid as right operand has type 'const char [20]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(30,72): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(30,72): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,16): error C2297: '<<': not valid as right operand has type 'const char [10]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40): error C2297: '<<': not valid as right operand has type 'const char [9]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,54): error C2677: binary '<<': no global operator found which takes type 'const std::string' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(32,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(38,12): error C2297: '<<': not valid as right operand has type 'const char [22]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(38,76): error C2297: '<<': not valid as right operand has type 'const char [4]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(38,76): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,16): error C2297: '<<': not valid as right operand has type 'const char [10]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40): error C2297: '<<': not valid as right operand has type 'const char [9]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,54): error C2677: binary '<<': no global operator found which takes type 'const std::string' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xstring(3419,32):
+      could be 'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(1979,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(3761,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(694,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(738,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(774,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(819,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(857,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(900,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(942,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(953,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1011,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1010,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\ostream(1088,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\regex(981,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::sub_match<_BidIt> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\thread(251,37):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,std::thread::id)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(40,40):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from 'int'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(43,12): error C2297: '<<': not valid as right operand has type 'const char [34]'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(43,12): warning C4552: '<<': result of expression not used
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(94,42): error C2039: 'function': is not a member of 'std'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\chrono(45,1):
+      see declaration of 'std'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(94,42): error C2065: 'function': undeclared identifier
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(94,10): error C2974: 'std::unordered_map': invalid template argument for '_Ty', type expected
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\unordered_map(61,7):
+      see declaration of 'std::unordered_map'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(94,10): error C2976: 'std::unordered_map': too few template arguments
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\unordered_map(61,7):
+      see declaration of 'std::unordered_map'
+  
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(94,57): error C2059: syntax error: '>'
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(216,21): error C2065: 'screens': undeclared identifier
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\op.cpp(220,21): error C2065: 'screens': undeclared identifier
+  Process.cpp
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\Process.cpp(20,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\Process.cpp(15,55): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Renee Khan\source\repos\CSOPESY\Project 1\Process.cpp(148,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Utils.cpp
+  Generating Code...
