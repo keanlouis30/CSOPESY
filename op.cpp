@@ -167,8 +167,24 @@ int main()
         {
             if (input == "screen -ls")
             {
-                system("cls");
+                //system("cls");
+                system("clear");
+                std::stringstream report;
+                // CPU Usage
+                int busy_cores = 0;
+                for (const auto& p : g_running_list.get_all()) {
+                    if (p.status == RUNNING) {
+                        busy_cores++;
+                    }
+                }
+                float utilization = (g_config.num_cpu > 0) ? (static_cast<float>(busy_cores) / g_config.num_cpu) * 100.0f : 0.0f;
+                report << "CPU Utilization: " << std::fixed << std::setprecision(2) << utilization << "%\n";
+                report << "Cores Used: " << busy_cores << " / " << g_config.num_cpu << "\n\n";
 
+                std::cout << report.str();
+                std::cout << "\n";
+                std::cout << "--------------------------------------------------------\n";
+                
                 std::cout << "Running processes:\n";
                 auto running = g_running_list.get_all();
                 if (running.empty())
@@ -181,11 +197,18 @@ int main()
                     {
                         std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
                                 << "Core: " << p.assigned_core_id << "\t"
-                                << p.commandCounter << " / " << p.totalCommands << "\n";
+                                << p.commandCounter << " / " << p.totalCommands;
+
+                        if (g_config.scheduler == "rr") {
+                            std::cout << "\tQuantum Remaining: " << p.quantum_remaining;
+                        }
+
+                        std::cout << "\n";
                     }
                 }
-                std::cout << "--------------------------------------------------------\n";
 
+                std::cout << "\n";
+                std::cout << "\n";
                 std::cout << "Finished processes:\n";
                 auto finished = g_finished_list.get_all();
                 if (finished.empty())
