@@ -46,10 +46,10 @@ void generate_report() {
     std::cout << report.str();
 
     // Save to file
-    // std::ofstream outfile("csopesy-log.txt");
-    // outfile << report.str();
-    // outfile.close();
-    // std::cout << "Report saved to csopesy-log.txt\n";
+    std::ofstream outfile("csopesy-log.txt");
+    outfile << report.str();
+    outfile.close();
+    std::cout << "Report saved to csopesy-log.txt\n";
 }
 
 void process_generator_thread() {
