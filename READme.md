@@ -2,6 +2,9 @@ To run:
 g++ opesy.cpp -o opesy
 ./opesy
 
+### run command
+g++ -std=c++17 -pthread op.cpp Process.cpp CPU_Core.cpp Console.cpp Utils.cpp Scheduler.cpp -o op
+
 #### config.txt
 
 The `config.txt` file is the settings file for the operating systems emulator. Instead of hardcoded values in the program, the configurations for the system comes from this file. 
