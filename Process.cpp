@@ -161,19 +161,14 @@ void Process::generate_instructions(const Config& config) {
                                 // Account for the actual loop body instructions multiplied by iterations
                                 // Plus the closing brace
                                 expanded += (body_expanded * for_iterations) + 1;
-                            } else {
-                                // FOR loop would exceed max, skip this iteration and try another instruction type
-                                continue;
+                                break;
                             }
-                        } else {
-                            // Not enough remaining instructions for FOR loop, skip this iteration
-                            continue;
                         }
-                    } else {
-                        // Can't generate FOR loop, skip this iteration
-                        continue;
                     }
-                    break;
+                    // If we reach here, FOR loop was not possible, so pick a different instruction type (0-4) and try that instead
+                    instruction_type = get_random(0, 4);
+                    // No break; fall through to try the new instruction type
+                    continue;
                 }
             }
         }
