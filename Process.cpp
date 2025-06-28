@@ -144,19 +144,23 @@ void Process::generate_instructions(const Config& config) {
                             int body_instructions = 1; // Keep body size minimal
                             
                             // Check if this would exceed our expanded count
-                            int potential_expansion = 1 + (body_instructions * for_iterations) + 1; // FOR + body*iterations + closing
+                            // FOR instruction (1) + loop body instructions * iterations + closing brace (1)
+                            int potential_expansion = 1 + (body_instructions * for_iterations) + 1;
                             if (expanded + potential_expansion <= num_instructions) {
                                 ss << "FOR " << for_iterations << " {";
                                 commands.push_back(ss.str());
                                 --remaining;
-                                ++expanded;
+                                ++expanded; // Count the FOR instruction
                                 
                                 int body_remaining = body_instructions;
                                 int body_expanded = 0;
                                 generate(nesting + 1, body_remaining, body_expanded);
                                 commands.push_back("}");
                                 remaining -= (body_instructions - body_remaining);
-                                expanded += (body_expanded * for_iterations); // Account for loop expansion
+                                
+                                // Account for the actual loop body instructions multiplied by iterations
+                                // Plus the closing brace
+                                expanded += (body_expanded * for_iterations) + 1;
                             } else {
                                 // FOR loop would exceed max, skip this iteration and try another instruction type
                                 continue;
