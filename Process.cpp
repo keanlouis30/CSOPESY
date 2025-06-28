@@ -29,9 +29,9 @@ void Process::generate_instructions(const Config& config) {
     int min_instructions = config.min_ins;
     int max_instructions = config.max_ins;
     int max_nesting = 3;
-    int expanded_count = 0; // Track actual expanded instructions
+    int expanded_count = 0;
     commands.clear();
-    
+
     auto get_unique_var = [this](int& var_counter) {
         std::string var_name;
         do {
@@ -40,36 +40,37 @@ void Process::generate_instructions(const Config& config) {
         return var_name;
     };
 
+    auto get_random_var = [this]() -> std::string {
+        if (variables.empty()) return "";
+        auto it = variables.begin();
+        std::advance(it, get_random(0, static_cast<int>(variables.size()) - 1));
+        return it->first;
+    };
+
     std::function<void(int, int&, int&)> generate;
     generate = [&](int nesting, int& remaining, int& expanded) {
-        int var_counter = (int)variables.size();
+        int var_counter = static_cast<int>(variables.size());
         while (remaining > 0 && expanded < num_instructions) {
             bool can_try_for = (nesting < max_nesting && remaining >= 3 && expanded < num_instructions - 2);
-            int instruction_type = get_random(0, can_try_for ? 5 : 4); // 0-4 if FOR not possible, 0-5 if possible
+            int instruction_type = get_random(0, can_try_for ? 5 : 4);
             std::stringstream ss;
+
             switch (instruction_type) {
                 case 0: { // PRINT
                     int print_type = get_random(0, 2);
-                    if (print_type == 0) { // PRINT value
+                    if (print_type == 0) {
                         ss << "PRINT " << get_random(0, 1000);
-                    } else if (print_type == 1 && !variables.empty()) { // PRINT var
-                        auto it = variables.begin();
-                        std::advance(it, get_random(0, (int)variables.size() - 1));
-                        ss << "PRINT " << it->first;
-                    } else { // PRINT var, value
-                        std::string var_name;
-                        if (!variables.empty()) {
-                            auto it = variables.begin();
-                            std::advance(it, get_random(0, (int)variables.size() - 1));
-                            var_name = it->first;
-                        } else {
+                    } else if (print_type == 1 && !variables.empty()) {
+                        ss << "PRINT " << get_random_var();
+                    } else {
+                        std::string var_name = get_random_var();
+                        if (var_name.empty()) {
                             var_name = get_unique_var(var_counter);
-                            uint16_t value = get_random(0, 1000);
-                            variables[var_name] = value;
+                            variables[var_name] = get_random(0, 1000);
                         }
                         ss << "PRINT " << var_name << ", " << get_random(0, 1000);
                     }
-                    commands.push_back(ss.str());
+                    commands.emplace_back(ss.str());
                     --remaining;
                     ++expanded;
                     break;
@@ -79,7 +80,7 @@ void Process::generate_instructions(const Config& config) {
                     uint16_t value = get_random(0, 1000);
                     variables[var_name] = value;
                     ss << "DECLARE " << var_name << " " << value;
-                    commands.push_back(ss.str());
+                    commands.emplace_back(ss.str());
                     --remaining;
                     ++expanded;
                     break;
@@ -91,48 +92,30 @@ void Process::generate_instructions(const Config& config) {
                     std::string arg1, arg2;
                     auto get_or_create_var = [&](int& var_counter) {
                         if (!variables.empty() && get_random(0, 1)) {
-                            auto it = variables.begin();
-                            std::advance(it, get_random(0, (int)variables.size() - 1));
-                            return it->first;
+                            return get_random_var();
                         } else {
                             std::string v = get_unique_var(var_counter);
-                            uint16_t value = get_random(0, 1000);
-                            variables[v] = value;
+                            variables[v] = get_random(0, 1000);
                             return v;
                         }
                     };
                     switch (add_type) {
-                        case 0: // (var, value)
-                            arg1 = get_or_create_var(var_counter);
-                            arg2 = std::to_string(get_random(0, 1000));
-                            break;
-                        case 1: // (value, var)
-                            arg1 = std::to_string(get_random(0, 1000));
-                            arg2 = get_or_create_var(var_counter);
-                            break;
-                        case 2: // (var, var)
-                            arg1 = get_or_create_var(var_counter);
-                            arg2 = get_or_create_var(var_counter);
-                            break;
-                        case 3: // (value, value)
-                            arg1 = std::to_string(get_random(0, 1000));
-                            arg2 = std::to_string(get_random(0, 1000));
-                            break;
+                        case 0: arg1 = get_or_create_var(var_counter); arg2 = std::to_string(get_random(0, 1000)); break;
+                        case 1: arg1 = std::to_string(get_random(0, 1000)); arg2 = get_or_create_var(var_counter); break;
+                        case 2: arg1 = get_or_create_var(var_counter); arg2 = get_or_create_var(var_counter); break;
+                        case 3: arg1 = std::to_string(get_random(0, 1000)); arg2 = std::to_string(get_random(0, 1000)); break;
                     }
                     ss << op << " " << arg1 << " " << arg2;
-                    commands.push_back(ss.str());
+                    commands.emplace_back(ss.str());
                     --remaining;
                     ++expanded;
                     break;
                 }
                 case 4: { // SLEEP
-                    int max_sleep = std::min(255, remaining - 1); 
-                    if (max_sleep <= 0) {
-                        max_sleep = 1;
-                    }
-                    uint8_t sleep_ticks = get_random(1, max_sleep);
-                    ss << "SLEEP " << (int)sleep_ticks;
-                    commands.push_back(ss.str());
+                    int max_sleep = std::min(255, remaining - 1);
+                    if (max_sleep <= 0) max_sleep = 1;
+                    ss << "SLEEP " << get_random(1, max_sleep);
+                    commands.emplace_back(ss.str());
                     --remaining;
                     ++expanded;
                     break;
@@ -144,13 +127,13 @@ void Process::generate_instructions(const Config& config) {
                             int potential_expansion = 1 + (body_instructions * for_iterations) + 1;
                             if (potential_expansion <= (num_instructions - expanded) && potential_expansion <= remaining) {
                                 ss << "FOR " << for_iterations << " {";
-                                commands.push_back(ss.str());
+                                commands.emplace_back(ss.str());
                                 --remaining;
                                 ++expanded;
                                 int body_remaining = body_instructions;
                                 int body_expanded = 0;
                                 generate(nesting + 1, body_remaining, body_expanded);
-                                commands.push_back("}");
+                                commands.emplace_back("}");
                                 remaining -= (body_instructions - body_remaining);
                                 expanded += (body_expanded * for_iterations) + 1;
                                 for_generated = true;
@@ -168,12 +151,13 @@ void Process::generate_instructions(const Config& config) {
             }
         }
     };
+
     int remaining = num_instructions;
     generate(0, remaining, expanded_count);
 
     // Ensure minimum instruction count
     while ((int)commands.size() < min_instructions) {
-        int instruction_type = get_random(0, 3); // 0:PRINT, 1:DECLARE, 2:ADD, 3:SUBTRACT
+        int instruction_type = get_random(0, 3);
         std::stringstream ss;
         switch (instruction_type) {
             case 0: ss << "PRINT " << get_random(0, 1000); break;
@@ -181,7 +165,7 @@ void Process::generate_instructions(const Config& config) {
             case 2: ss << "ADD var_" << commands.size() << " " << get_random(0, 1000); break;
             case 3: ss << "SUBTRACT var_" << commands.size() << " " << get_random(0, 1000); break;
         }
-        commands.push_back(ss.str());
+        commands.emplace_back(ss.str());
     }
     // Ensure maximum instruction count
     if ((int)commands.size() > max_instructions) {
