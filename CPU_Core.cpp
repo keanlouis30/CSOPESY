@@ -115,7 +115,7 @@ void CPU_Core::execute_command(Process &p)
         }
     } else {
         // Log unknown commands
-        outfile << "Error: Unknown command: " << command << std::endl;
+        outfile << "Executing Command: " << command << std::endl;
     }
 
     // Close the log file.
