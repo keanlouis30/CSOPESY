@@ -139,15 +139,31 @@ void Process::generate_instructions(const Config& config) {
                 }
                 case 5: { // FOR
                     if (nesting < max_nesting && remaining > 1) {
-                        int for_iterations = get_random(1, 5);
-                        int max_for_body = std::min(remaining - 1, get_random(1, 3));
-                        ss << "FOR " << for_iterations << " {";
-                        commands.push_back(ss.str());
-                        --remaining;
-                        int body_remaining = max_for_body;
-                        generate(nesting + 1, body_remaining);
-                        commands.push_back("}");
-                        remaining -= (max_for_body - body_remaining);
+                        // Calculate how many instructions we can afford for this FOR loop
+                        // We need to account for: 1 (FOR instruction) + 1 (closing brace) + (body_instructions * iterations)
+                        int available_for_expansion = remaining - 2; // Reserve 2 for FOR and closing brace
+                        
+                        if (available_for_expansion > 0) {
+                            int max_iterations = std::min(5, available_for_expansion);
+                            int for_iterations = get_random(1, max_iterations);
+                            
+                            // Calculate max body instructions based on remaining expansion capacity
+                            int max_body_instructions = available_for_expansion / for_iterations;
+                            if (max_body_instructions <= 0) {
+                                max_body_instructions = 1;
+                            }
+                            
+                            int actual_body_instructions = std::min(max_body_instructions, get_random(1, 3));
+                            
+                            ss << "FOR " << for_iterations << " {";
+                            commands.push_back(ss.str());
+                            --remaining;
+                            
+                            int body_remaining = actual_body_instructions;
+                            generate(nesting + 1, body_remaining);
+                            commands.push_back("}");
+                            remaining -= (actual_body_instructions - body_remaining);
+                        }
                     }
                     break;
                 }
