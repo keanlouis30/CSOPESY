@@ -31,8 +31,7 @@ void CPU_Core::execute_command(Process &p)
     std::string command_str = p.commands[p.commandCounter];
     std::vector<std::string> parts = split(command_str, ' ');
     std::string command = parts[0];
-
-    std::ofstream outfile(p.name + "_log.txt", std::ios_base::app);
+ 
 
     if (command == "DECLARE") {
         if (parts.size() == 3) {
@@ -45,12 +44,13 @@ void CPU_Core::execute_command(Process &p)
             p.variables[parts[1]] = val1 + val2;
         }
     } else if (command == "PRINT") {
+        std::ofstream outfile(p.name + "_log.txt", std::ios_base::app); // creates the file
         if (parts.size() > 1) {
             std::string output = parts[1];
             if (p.variables.count(output)) {
-                outfile << p.variables[output] << std::endl;
+                outfile << p.variables[output] << std::endl; 
             } else {
-                outfile << trim_quotes(output) << std::endl;
+                outfile << trim_quotes(output) << std::endl; 
             }
         }
     } else if (command == "SLEEP") {
