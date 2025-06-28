@@ -31,8 +31,8 @@ private:
             if (core->current_process != nullptr &&
                 core->current_process->commandCounter >= core->current_process->totalCommands)
             {
-                std::cout << "Core " << core->get_id()
-                          << " finished process: " << core->current_process->name << std::endl;
+                //std::cout << "Core " << core->get_id()
+                //          << " finished process: " << core->current_process->name << std::endl;
 
                 core->current_process->status = FINISHED;
                 g_finished_list.add(*core->current_process);
@@ -49,8 +49,8 @@ private:
             {
                 if (core->is_idle())
                 {
-                    std::cout << "Core " << core->get_id()
-                              << " is idle, assigning process." << std::endl;
+                    //std::cout << "Core " << core->get_id()
+                    //          << " is idle, assigning process." << std::endl;
 
                     Process next_process;
                     if (ready_queue.pop(next_process))
