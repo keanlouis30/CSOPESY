@@ -34,34 +34,90 @@ void CPU_Core::execute_command(Process &p)
 
     std::ofstream outfile(p.name + "_log.txt", std::ios_base::app);
 
-    if (command == "DECLARE") {
+//     if (command == "DECLARE") {
+//         if (parts.size() == 3) {
+//             p.variables[parts[1]] = std::stoi(parts[2]);
+//         }
+//     } else if (command == "ADD") {
+//         if (parts.size() == 4) {
+//             uint16_t val1 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+//             uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
+//             p.variables[parts[1]] = val1 + val2;
+//         }
+//     } else if (command == "PRINT") {
+//         if (parts.size() > 1) {
+//             std::string output = parts[1];
+//             if (p.variables.count(output)) {
+//                 outfile << p.variables[output] << std::endl;
+//             } else {
+//                 outfile << trim_quotes(output) << std::endl;
+//             }
+//         }
+//     } else if (command == "SLEEP") {
+//         if (parts.size() == 2) {
+//             int sleep_cycles = std::stoi(parts[1]);
+//             // This is a simplification. A real implementation would involve the scheduler.
+//             // For now, we can simulate it with a delay, but it will block the core.
+//             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder
+//             outfile << "Slept for " << sleep_cycles << " ticks." << std::endl;
+//         }
+//     }
+
+//     outfile.close();
+// }
+  if (command == "DECLARE") {
+        // DECLARE variable_name value
         if (parts.size() == 3) {
-            p.variables[parts[1]] = std::stoi(parts[2]);
+            std::string var_name = parts[1];
+            uint16_t value = std::stoi(parts[2]);
+            p.variables[var_name] = value;
+            outfile << "DECLARE: " << var_name << " set to " << value << std::endl;
+        } else {
+            outfile << "Error: Invalid DECLARE command format: " << command_str << std::endl;
         }
     } else if (command == "ADD") {
+        // ADD result_variable operand1 operand2
         if (parts.size() == 4) {
+            std::string result_var = parts[1];
+            // Resolve operand1: check if it's a variable or a literal
             uint16_t val1 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+            // Resolve operand2: check if it's a variable or a literal
             uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
-            p.variables[parts[1]] = val1 + val2;
+            p.variables[result_var] = val1 + val2;
+            outfile << "ADD: " << result_var << " = " << val1 << " + " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
+        } else {
+            outfile << "Error: Invalid ADD command format: " << command_str << std::endl;
         }
     } else if (command == "PRINT") {
+        // PRINT variable_name or "string literal"
         if (parts.size() > 1) {
-            std::string output = parts[1];
-            if (p.variables.count(output)) {
-                outfile << p.variables[output] << std::endl;
+            std::string output_target = parts[1];
+            if (p.variables.count(output_target)) {
+                // If it's a variable, print its value
+                outfile << "PRINT: " << p.variables[output_target] << std::endl;
             } else {
-                outfile << trim_quotes(output) << std::endl;
+                // If it's not a variable, assume it's a string literal and trim quotes
+                outfile << "PRINT: " << trim_quotes(output_target) << std::endl;
             }
+        } else {
+            outfile << "Error: Invalid PRINT command format: " << command_str << std::endl;
         }
     } else if (command == "SLEEP") {
+        // SLEEP cycles
         if (parts.size() == 2) {
             int sleep_cycles = std::stoi(parts[1]);
-            // This is a simplification. A real implementation would involve the scheduler.
-            // For now, we can simulate it with a delay, but it will block the core.
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder
-            outfile << "Slept for " << sleep_cycles << " ticks." << std::endl;
+            // Simulate sleep by pausing the current thread.
+            // In a real OS, this would involve yielding to the scheduler.
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder delay
+            outfile << "SLEEP: Process slept for " << sleep_cycles << " ticks." << std::endl;
+        } else {
+            outfile << "Error: Invalid SLEEP command format: " << command_str << std::endl;
         }
+    } else {
+        // Log unknown commands
+        outfile << "Error: Unknown command: " << command << std::endl;
     }
 
+    // Close the log file.
     outfile.close();
 }
