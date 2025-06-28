@@ -70,6 +70,19 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "xtree": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "functional": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "variant": "cpp"
     }
 }

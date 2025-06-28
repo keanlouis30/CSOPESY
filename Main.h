@@ -1,0 +1,21 @@
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <unordered_map>
+#include <fstream>
+#include <iomanip>
+#include <regex>
+#include <queue>
+#include <vector>
+#include <mutex>
+#include <atomic>
+#include <thread>
+
+#include "Config.h"
+#include "ReadyQueue.h"
+#include "Process.h"
+#include "ProcessCollection.h"
+#include "ScreenInterface.h"
+#include "Console.h"
+#include "Scheduler.h"
