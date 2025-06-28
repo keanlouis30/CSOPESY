@@ -15,6 +15,9 @@ Process::Process(std::string n, int p, const Config& config)
     strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
     creation_timestamp = buf;
 
+    // Always add variable 'x' with value 0
+    variables["x"] = 0;
+
     // Generate instructions
     generate_instructions(config);
     totalCommands = commands.size();
@@ -26,158 +29,17 @@ Process::Process(std::string n, int p, const Config& config)
 
 void Process::generate_instructions(const Config& config) {
     int num_instructions = get_random(config.min_ins, config.max_ins);
-    int max_nesting = 3;
-    int expanded_count = 0; // Track actual expanded instructions
-    
-    auto get_unique_var = [this](int& var_counter) {
-        std::string var_name;
-        do {
-            var_name = "var_" + std::to_string(var_counter++);
-        } while (variables.find(var_name) != variables.end());
-        return var_name;
-    };
-
-    std::function<void(int, int&, int&)> generate;
-    generate = [&](int nesting, int& remaining, int& expanded) {
-        int var_counter = (int)variables.size();
-        while (remaining > 0 && expanded < num_instructions) {
-            // If the remaining budget is too small for a FOR loop, only generate single instructions
-            bool can_try_for = (nesting < max_nesting && remaining >= 3 && expanded < num_instructions - 2);
-            int instruction_type = get_random(0, can_try_for ? 5 : 4); // 0-4 if FOR not possible, 0-5 if possible
-            std::stringstream ss;
-            switch (instruction_type) {
-                case 0: { // PRINT
-                    int print_type = get_random(0, 2);
-                    if (print_type == 0) { // PRINT value
-                        ss << "PRINT " << get_random(0, 1000);
-                    } else if (print_type == 1 && !variables.empty()) { // PRINT var
-                        auto it = variables.begin();
-                        std::advance(it, get_random(0, (int)variables.size() - 1));
-                        ss << "PRINT " << it->first;
-                    } else { // PRINT var, value
-                        std::string var_name;
-                        if (!variables.empty()) {
-                            auto it = variables.begin();
-                            std::advance(it, get_random(0, (int)variables.size() - 1));
-                            var_name = it->first;
-                        } else {
-                            var_name = get_unique_var(var_counter);
-                            uint16_t value = get_random(0, 1000);
-                            variables[var_name] = value;
-                        }
-                        ss << "PRINT " << var_name << ", " << get_random(0, 1000);
-                    }
-                    commands.push_back(ss.str());
-                    --remaining;
-                    ++expanded;
-                    break;
-                }
-                case 1: { // DECLARE
-                    std::string var_name = get_unique_var(var_counter);
-                    uint16_t value = get_random(0, 1000);
-                    variables[var_name] = value;
-                    ss << "DECLARE " << var_name << " " << value;
-                    commands.push_back(ss.str());
-                    --remaining;
-                    ++expanded;
-                    break;
-                }
-                case 2: // ADD
-                case 3: { // SUBTRACT
-                    std::string op = (instruction_type == 2) ? "ADD" : "SUBTRACT";
-                    int add_type = get_random(0, 3);
-                    std::string arg1, arg2;
-                    // Helper to get or create a variable
-                    auto get_or_create_var = [&](int& var_counter) {
-                        if (!variables.empty() && get_random(0, 1)) {
-                            auto it = variables.begin();
-                            std::advance(it, get_random(0, (int)variables.size() - 1));
-                            return it->first;
-                        } else {
-                            std::string v = get_unique_var(var_counter);
-                            uint16_t value = get_random(0, 1000);
-                            variables[v] = value;
-                            return v;
-                        }
-                    };
-                    switch (add_type) {
-                        case 0: // (var, value)
-                            arg1 = get_or_create_var(var_counter);
-                            arg2 = std::to_string(get_random(0, 1000));
-                            break;
-                        case 1: // (value, var)
-                            arg1 = std::to_string(get_random(0, 1000));
-                            arg2 = get_or_create_var(var_counter);
-                            break;
-                        case 2: // (var, var)
-                            arg1 = get_or_create_var(var_counter);
-                            arg2 = get_or_create_var(var_counter);
-                            break;
-                        case 3: // (value, value)
-                            arg1 = std::to_string(get_random(0, 1000));
-                            arg2 = std::to_string(get_random(0, 1000));
-                            break;
-                    }
-                    ss << op << " " << arg1 << " " << arg2;
-                    commands.push_back(ss.str());
-                    --remaining;
-                    ++expanded;
-                    break;
-                }
-                case 4: { // SLEEP
-                    int max_sleep = std::min(255, remaining - 1); 
-                    if (max_sleep <= 0) {
-                        max_sleep = 1;
-                    }
-                    uint8_t sleep_ticks = get_random(1, max_sleep);
-                    ss << "SLEEP " << (int)sleep_ticks;
-                    commands.push_back(ss.str());
-                    --remaining;
-                    ++expanded;
-                    break;
-                }
-                case 5: { // FOR
-                    // Only generate FOR if it fits exactly in the remaining budget
-                    bool for_generated = false;
-                    for (int for_iterations = 2; for_iterations >= 1; --for_iterations) {
-                        for (int body_instructions = 1; body_instructions <= 2; ++body_instructions) {
-                            int potential_expansion = 1 + (body_instructions * for_iterations) + 1;
-                            if (potential_expansion <= (num_instructions - expanded) && potential_expansion <= remaining) {
-                                ss << "FOR " << for_iterations << " {";
-                                commands.push_back(ss.str());
-                                --remaining;
-                                ++expanded;
-                                int body_remaining = body_instructions;
-                                int body_expanded = 0;
-                                generate(nesting + 1, body_remaining, body_expanded);
-                                commands.push_back("}");
-                                remaining -= (body_instructions - body_remaining);
-                                expanded += (body_expanded * for_iterations) + 1;
-                                for_generated = true;
-                                break;
-                            }
-                        }
-                        if (for_generated) break;
-                    }
-                    if (!for_generated) {
-                        // If FOR can't fit, pick a different instruction type (0-4)
-                        instruction_type = get_random(0, 4);
-                        continue;
-                    }
-                    break;
-                }
-            }
+    commands.clear();
+    // Alternate PRINT and ADD instructions
+    for (int i = 0; i < num_instructions; ++i) {
+        std::stringstream ss;
+        if (i % 2 == 0) {
+            ss << "PRINT Value from: x";
+        } else {
+            int add_val = get_random(1, 10);
+            ss << "ADD x x " << add_val;
         }
-        // If we exit the loop and haven't filled up to num_instructions, fill with PRINTs
-        while (expanded < num_instructions && remaining > 0) {
-            std::stringstream ss;
-            ss << "PRINT " << get_random(0, 1000);
-            commands.push_back(ss.str());
-            --remaining;
-            ++expanded;
-        }
-    };
-    int remaining = num_instructions;
-    generate(0, remaining, expanded_count);
+        commands.push_back(ss.str());
+    }
     totalCommands = commands.size();
 }
