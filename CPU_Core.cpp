@@ -94,13 +94,13 @@ void CPU_Core::execute_command(Process &p)
             std::string output_target = parts[1];
             if (p.variables.count(output_target)) {
                 // If it's a variable, print its value
-                outfile << "PRINT: " << p.variables[output_target] << std::endl;
+                outfile << "Hello World from  " << p.name << " !" << std::endl;
             } else {
                 // If it's not a variable, assume it's a string literal and trim quotes
-                outfile << "PRINT: " << trim_quotes(output_target) << std::endl;
+                outfile << "Hello World from  " << p.name << " !" << std::endl;
             }
         } else {
-            outfile << "Executing PRINT command: " << command_str << std::endl;
+                outfile << "Hello World from  " << p.name << " !" << std::endl;
         }
     } else if (command == "SLEEP") {
         // SLEEP cycles
