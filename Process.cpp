@@ -157,8 +157,17 @@ void Process::generate_instructions(const Config& config) {
                                 commands.push_back("}");
                                 remaining -= (body_instructions - body_remaining);
                                 expanded += (body_expanded * for_iterations); // Account for loop expansion
+                            } else {
+                                // FOR loop would exceed max, skip this iteration and try another instruction type
+                                continue;
                             }
+                        } else {
+                            // Not enough remaining instructions for FOR loop, skip this iteration
+                            continue;
                         }
+                    } else {
+                        // Can't generate FOR loop, skip this iteration
+                        continue;
                     }
                     break;
                 }
