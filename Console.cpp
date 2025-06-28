@@ -37,16 +37,16 @@ void Console::display(const std::string& process_name, ReadyQueue& ready_queue, 
 
         // Display logs
         SI.printMessage("\033[35mLogs:\033[0m");
-        std::ifstream log_file(p.name + "_log.txt");
-        if (log_file.is_open()) {
-            std::string line;
-            while (std::getline(log_file, line)) {
-                SI.printMessage("  " + line);
-            }
-            log_file.close();
-        } else {
-            SI.printMessage("  (No logs yet)");
-        }
+        // std::ifstream log_file(p.name + "_log.txt");
+        // if (log_file.is_open()) {
+        //     std::string line;
+        //     while (std::getline(log_file, line)) {
+        //         SI.printMessage("  " + line);
+        //     }
+        //     log_file.close();
+        // } else {
+        //     SI.printMessage("  (No logs yet)");
+        // }
 
         if (p.status == FINISHED) {
             SI.printMessage("\n\033[32mFinished!\033[0m");
