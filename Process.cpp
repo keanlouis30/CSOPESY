@@ -28,6 +28,7 @@ void Process::generate_instructions(const Config& config) {
     int num_instructions = get_random(config.min_ins, config.max_ins);
     int max_nesting = 3;
     int total_generated = 0;
+    int expanded_count = 0; // Track actual expanded instructions
     
     auto get_unique_var = [this](int& var_counter) {
         std::string var_name;
@@ -37,10 +38,10 @@ void Process::generate_instructions(const Config& config) {
         return var_name;
     };
 
-    std::function<void(int, int&)> generate;
-    generate = [&](int nesting, int& remaining) {
+    std::function<void(int, int&, int&)> generate;
+    generate = [&](int nesting, int& remaining, int& expanded) {
         int var_counter = (int)variables.size();
-        while (remaining > 0) {
+        while (remaining > 0 && expanded < num_instructions) {
             int instruction_type = get_random(0, 5); // 0:PRINT, 1:DECLARE, 2:ADD, 3:SUBTRACT, 4:SLEEP, 5:FOR
             std::stringstream ss;
             switch (instruction_type) {
@@ -67,6 +68,7 @@ void Process::generate_instructions(const Config& config) {
                     }
                     commands.push_back(ss.str());
                     --remaining;
+                    ++expanded;
                     break;
                 }
                 case 1: { // DECLARE
@@ -76,6 +78,7 @@ void Process::generate_instructions(const Config& config) {
                     ss << "DECLARE " << var_name << " " << value;
                     commands.push_back(ss.str());
                     --remaining;
+                    ++expanded;
                     break;
                 }
                 case 2: // ADD
@@ -117,15 +120,9 @@ void Process::generate_instructions(const Config& config) {
                     ss << op << " " << arg1 << " " << arg2;
                     commands.push_back(ss.str());
                     --remaining;
+                    ++expanded;
                     break;
                 }
-                // case 4: { // SLEEP
-                //     uint8_t sleep_ticks = get_random(0, 255);
-                //     ss << "SLEEP " << (int)sleep_ticks;
-                //     commands.push_back(ss.str());
-                //     --remaining;
-                //     break;
-                // }
                 case 4: { // SLEEP
                     int max_sleep = std::min(255, remaining - 1); 
                     if (max_sleep <= 0) {
@@ -135,34 +132,32 @@ void Process::generate_instructions(const Config& config) {
                     ss << "SLEEP " << (int)sleep_ticks;
                     commands.push_back(ss.str());
                     --remaining;
+                    ++expanded;
                     break;
                 }
                 case 5: { // FOR
                     if (nesting < max_nesting && remaining > 1) {
-                        // Calculate how many instructions we can afford for this FOR loop
-                        // We need to account for: 1 (FOR instruction) + 1 (closing brace) + (body_instructions * iterations)
-                        int available_for_expansion = remaining - 2; // Reserve 2 for FOR and closing brace
-                        
-                        if (available_for_expansion > 0) {
-                            int max_iterations = std::min(5, available_for_expansion);
-                            int for_iterations = get_random(1, max_iterations);
+                        // Check if we have enough remaining instructions for a FOR loop
+                        // We need at least 3: FOR instruction, 1 body instruction, closing brace
+                        if (remaining >= 3 && expanded < num_instructions - 2) {
+                            int for_iterations = get_random(1, 2); // Keep iterations very low
+                            int body_instructions = 1; // Keep body size minimal
                             
-                            // Calculate max body instructions based on remaining expansion capacity
-                            int max_body_instructions = available_for_expansion / for_iterations;
-                            if (max_body_instructions <= 0) {
-                                max_body_instructions = 1;
+                            // Check if this would exceed our expanded count
+                            int potential_expansion = 1 + (body_instructions * for_iterations) + 1; // FOR + body*iterations + closing
+                            if (expanded + potential_expansion <= num_instructions) {
+                                ss << "FOR " << for_iterations << " {";
+                                commands.push_back(ss.str());
+                                --remaining;
+                                ++expanded;
+                                
+                                int body_remaining = body_instructions;
+                                int body_expanded = 0;
+                                generate(nesting + 1, body_remaining, body_expanded);
+                                commands.push_back("}");
+                                remaining -= (body_instructions - body_remaining);
+                                expanded += (body_expanded * for_iterations); // Account for loop expansion
                             }
-                            
-                            int actual_body_instructions = std::min(max_body_instructions, get_random(1, 3));
-                            
-                            ss << "FOR " << for_iterations << " {";
-                            commands.push_back(ss.str());
-                            --remaining;
-                            
-                            int body_remaining = actual_body_instructions;
-                            generate(nesting + 1, body_remaining);
-                            commands.push_back("}");
-                            remaining -= (actual_body_instructions - body_remaining);
                         }
                     }
                     break;
@@ -171,6 +166,6 @@ void Process::generate_instructions(const Config& config) {
         }
     };
     int remaining = num_instructions;
-    generate(0, remaining);
+    generate(0, remaining, expanded_count);
     totalCommands = commands.size();
 }
