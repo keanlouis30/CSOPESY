@@ -73,7 +73,7 @@ void CPU_Core::execute_command(Process &p)
             p.variables[var_name] = value;
             outfile << "DECLARE: " << var_name << " set to " << value << std::endl;
         } else {
-            outfile << "Error: Invalid DECLARE command format: " << command_str << std::endl;
+            outfile << "Executing DECLARE command: " << command_str << std::endl;
         }
     } else if (command == "ADD") {
         // ADD result_variable operand1 operand2
@@ -86,7 +86,7 @@ void CPU_Core::execute_command(Process &p)
             p.variables[result_var] = val1 + val2;
             outfile << "ADD: " << result_var << " = " << val1 << " + " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
         } else {
-            outfile << "Error: Invalid ADD command format: " << command_str << std::endl;
+            outfile << "Executing ADD command: " << command_str << std::endl;
         }
     } else if (command == "PRINT") {
         // PRINT variable_name or "string literal"
@@ -100,7 +100,7 @@ void CPU_Core::execute_command(Process &p)
                 outfile << "PRINT: " << trim_quotes(output_target) << std::endl;
             }
         } else {
-            outfile << "Error: Invalid PRINT command format: " << command_str << std::endl;
+            outfile << "Executing PRINT command: " << command_str << std::endl;
         }
     } else if (command == "SLEEP") {
         // SLEEP cycles
@@ -111,7 +111,7 @@ void CPU_Core::execute_command(Process &p)
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder delay
             outfile << "SLEEP: Process slept for " << sleep_cycles << " ticks." << std::endl;
         } else {
-            outfile << "Error: Invalid SLEEP command format: " << command_str << std::endl;
+            outfile << "Executing SLEEP command: " << command_str << std::endl;
         }
     } else {
         // Log unknown commands

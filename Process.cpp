@@ -119,8 +119,19 @@ void Process::generate_instructions(const Config& config) {
                     --remaining;
                     break;
                 }
+                // case 4: { // SLEEP
+                //     uint8_t sleep_ticks = get_random(0, 255);
+                //     ss << "SLEEP " << (int)sleep_ticks;
+                //     commands.push_back(ss.str());
+                //     --remaining;
+                //     break;
+                // }
                 case 4: { // SLEEP
-                    uint8_t sleep_ticks = get_random(0, 255);
+                    int max_sleep = std::min(255, remaining - 1); 
+                    if (max_sleep <= 0) {
+                        max_sleep = 1;
+                    }
+                    uint8_t sleep_ticks = get_random(1, max_sleep);
                     ss << "SLEEP " << (int)sleep_ticks;
                     commands.push_back(ss.str());
                     --remaining;
