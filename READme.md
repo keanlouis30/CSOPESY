@@ -1,3 +1,9 @@
+GROUP 10 - CSOPESY S14
+Kean Louis R. Rosales
+Renee Althea F. Khan
+Samantha Erica R. O'Neil
+Juliana Isabelle A. Guillermo
+
 To run:
 g++ opesy.cpp -o opesy
 ./opesy

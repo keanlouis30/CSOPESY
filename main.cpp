@@ -199,10 +199,6 @@ int main()
                                 << "Core: " << p.assigned_core_id << "\t"
                                 << p.commandCounter << " / " << p.totalCommands;
 
-                        if (g_config.scheduler == "rr") {
-                            std::cout << "\tQuantum Remaining: " << p.quantum_remaining;
-                        }
-
                         std::cout << "\n";
                     }
                 }
