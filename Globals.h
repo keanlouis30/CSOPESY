@@ -11,4 +11,6 @@ class ProcessCollection;
 extern Config g_config;
 extern ReadyQueue g_ready_queue;
 extern ProcessCollection g_running_list;
+extern ProcessCollection g_finished_list;
 extern std::atomic<bool> g_shutdown;
+extern std::atomic<bool> g_generate_processes;

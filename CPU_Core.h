@@ -17,8 +17,6 @@ class CPU_Core
 private:
     int core_id;
 
-    ProcessCollection &finished_list;
-
     std::atomic<bool> &shutdown_signal;
 
 public:
@@ -26,7 +24,7 @@ public:
     std::shared_ptr<Process> current_process;
 
     CPU_Core(int id, ProcessCollection &finished, std::atomic<bool> &shutdown)
-        : core_id(id), current_process(nullptr), finished_list(finished), shutdown_signal(shutdown) {}
+        : core_id(id), current_process(nullptr), shutdown_signal(shutdown) {}
 
     void run()
     {
@@ -56,7 +54,7 @@ public:
                 if (p->commandCounter >= p->totalCommands)
                 {
                     p->status = FINISHED;
-                    finished_list.add(*p);
+                    g_finished_list.add(*p);
 
                     {
                         std::lock_guard<std::mutex> lock(core_mtx);
