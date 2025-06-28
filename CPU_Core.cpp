@@ -53,15 +53,16 @@ void CPU_Core::execute_command(Process &p)
                 outfile << trim_quotes(output) << std::endl; 
             }
         }
+        outfile.close();
     } else if (command == "SLEEP") {
         if (parts.size() == 2) {
             int sleep_cycles = std::stoi(parts[1]);
             // This is a simplification. A real implementation would involve the scheduler.
             // For now, we can simulate it with a delay, but it will block the core.
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder
-            outfile << "Slept for " << sleep_cycles << " ticks." << std::endl;
+            std::cout << "Slept for " << sleep_cycles << " ticks." << std::endl;
         }
     }
 
-    outfile.close();
+   
 }
