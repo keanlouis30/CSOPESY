@@ -9,7 +9,7 @@ g++ opesy.cpp -o opesy
 ./opesy
 
 ### run command
-g++ -std=c++17 -pthread main.cpp Process.cpp CPU_Core.cpp Console.cpp Utils.cpp Scheduler.cpp -o op
+g++ -std=c++17 -pthread main.cpp Process.cpp CPU_Core.cpp Console.cpp Utils.cpp Scheduler.cpp MemoryManager.cpp -o op
 
 #### config.txt
 

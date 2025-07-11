@@ -9,7 +9,8 @@
 #include "Config.h"
 #include "Globals.h"
 
-class Process {
+class Process
+{
 public:
     std::string name;
     int pid;
@@ -22,11 +23,14 @@ public:
     int quantum_remaining;
     int quantum_max;
     int commandCounter;
+    size_t memory_start_address;
+    size_t memory_size;
 
-    Process(std::string n, int p, const Config& config);
-    Process(const Process&) = default;
+    Process(std::string n, int p, const Config& config); 
+
+    Process(const Process &) = default;
     Process() = default;
 
 private:
-    void generate_instructions(const Config& config);
+    void generate_instructions(const Config &config);
 };

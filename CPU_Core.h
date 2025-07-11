@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ProcessCollection.h" 
+#include "ProcessCollection.h"
 #include <atomic>
 #include "Process.h"
 #include <mutex>
@@ -10,7 +10,6 @@
 #include "Config.h"
 #include "Status.h"
 #include "Globals.h"
-
 
 class CPU_Core
 {
@@ -25,6 +24,8 @@ public:
 
     CPU_Core(int id, ProcessCollection &finished, std::atomic<bool> &shutdown)
         : core_id(id), current_process(nullptr), shutdown_signal(shutdown) {}
+
+    // In CPU_Core.h
 
     void run()
     {
@@ -42,29 +43,16 @@ public:
 
                 if (p->commandCounter < p->totalCommands)
                 {
-                    // Execute a command
+                    
                     execute_command(*p);
                     p->commandCounter++;
-                    p->quantum_remaining--; // Decrement quantum for RR
+                    p->quantum_remaining--; 
 
-                    // Simulate execution delay
                     std::this_thread::sleep_for(std::chrono::milliseconds(g_config.delays_per_exec));
-                }
-
-                if (p->commandCounter >= p->totalCommands)
-                {
-                    p->status = FINISHED;
-                    g_finished_list.add(*p);
-
-                    {
-                        std::lock_guard<std::mutex> lock(core_mtx);
-                        current_process = nullptr;
-                    }
                 }
             }
             else
             {
-
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
@@ -88,16 +76,19 @@ public:
         return current_process == nullptr;
     }
 
-    int get_id() {
+    int get_id()
+    {
         return core_id;
     }
 
-    std::shared_ptr<Process> get_process() {
+    std::shared_ptr<Process> get_process()
+    {
         std::lock_guard<std::mutex> lock(core_mtx);
         return current_process;
     }
 
-    void release_process() {
+    void release_process()
+    {
         std::lock_guard<std::mutex> lock(core_mtx);
         current_process = nullptr;
     }
