@@ -1,6 +1,9 @@
 // HEADERS
 #include "Main.h"
 #include "MemoryManager.h"
+#include <unordered_map>
+#include <string>
+#include <functional>
 
 Config g_config;
 ReadyQueue g_ready_queue;
