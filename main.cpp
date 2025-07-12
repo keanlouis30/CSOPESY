@@ -224,7 +224,7 @@ int main()
             std::cout << "\033[31mUnknown Command. Please run 'initialize' first.\033[0m" << std::endl;
         }
 
-    } while (!initialized);
+    } while (!initialized && exit != 9);
 
     // now that it has been initialized
     if (exit != 9)
@@ -367,34 +367,40 @@ int main()
             {
                 std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
             }
-
-        } while (exit != 1);
+    } while (exit != 1);
     }
 
-    std::cout << "\n\033[33m[System] Shutdown initiated. Waiting for all tasks to complete...\033[0m\n";
-    g_shutdown = true;
-
-    g_generate_processes = false;
-    generator_thread.join();
-    std::cout << "[System] Process generator thread has shut down.\n";
-
-    scheduler_thread.join();
-    std::cout << "[System] Scheduler thread has shut down.\n";
-
-    reporter_thread.join();
-    std::cout << "[System] Memory reporter thread has shut down.\n";
-
-    for (size_t i = 0; i < core_threads.size(); ++i)
+    if (exit != 9)
     {
-        core_threads[i].join();
-        std::cout << "[System] Core " << i << " thread has shut down.\n";
-    }
+        std::cout << "\n\033[33m[System] Shutdown initiated. Waiting for all tasks to complete...\033[0m\n";
+        g_shutdown = true;
 
-    for (auto *core : cpu_cores)
+        g_generate_processes = false;
+        generator_thread.join();
+        std::cout << "[System] Process generator thread has shut down.\n";
+
+        scheduler_thread.join();
+        std::cout << "[System] Scheduler thread has shut down.\n";
+
+        reporter_thread.join();
+        std::cout << "[System] Memory reporter thread has shut down.\n";
+
+        for (size_t i = 0; i < core_threads.size(); ++i)
+        {
+            core_threads[i].join();
+            std::cout << "[System] Core " << i << " thread has shut down.\n";
+        }
+
+        for (auto *core : cpu_cores)
+        {
+            delete core;
+        }
+
+        std::cout << "\033[32m[System] All threads terminated. Goodbye!\033[0m\n";
+    }
+    if (exit == 9)
     {
-        delete core;
+        std::cout << "\n\033[33m[System] Shutdown initiated.\033[0m\n";
     }
-
-    std::cout << "\033[32m[System] All threads terminated. Goodbye!\033[0m\n";
     return 0;
 };
