@@ -359,6 +359,14 @@ int main()
             {
                 generate_report();
             }
+            else if (input == "test")
+            {
+                g_generate_processes = true;
+                std::cout << "Automatic process generation started." << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                g_generate_processes = false;
+                std::cout << "Automatic process generation stopped." << std::endl;
+            }
             else if (input == "exit")
             {
                 exit = 1;

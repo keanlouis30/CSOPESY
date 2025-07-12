@@ -236,7 +236,7 @@ private:
                         {
                             // ALLOCATION FAILED: Memory is full.
                             // Revert back to the TAIL of the ready queue.
-                            std::cout << "[Scheduler] Memory full. Re-queueing " << next_process.name << std::endl;
+                            //std::cout << "[Scheduler] Memory full. Re-queueing " << next_process.name << std::endl;
                             ready_queue.push(next_process);
                         }
                     }

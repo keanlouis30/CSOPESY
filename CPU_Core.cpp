@@ -56,7 +56,7 @@ auto resolve = [&](const std::string& tok,
 };
 
 
-    std::cout <<  " \033[35m" << command << "\033[0m" << std::endl;
+    //std::cout <<  " \033[35m" << command << "\033[0m" << std::endl;
   if (command == "DECLARE") {
         // DECLARE variable_name value
         if (parts.size() == 3) {
