@@ -1,5 +1,10 @@
 // HEADERS
 #include "Main.h"
+#include <sstream>
+#include <unordered_map>
+#include <functional>
+#include <string>
+
 
 Config g_config;
 ReadyQueue g_ready_queue;
