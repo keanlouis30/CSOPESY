@@ -34,37 +34,29 @@ void CPU_Core::execute_command(Process &p)
 
     std::ofstream outfile(p.name + "_log.txt", std::ios_base::app);
 
-//     if (command == "DECLARE") {
-//         if (parts.size() == 3) {
-//             p.variables[parts[1]] = std::stoi(parts[2]);
-//         }
-//     } else if (command == "ADD") {
-//         if (parts.size() == 4) {
-//             uint16_t val1 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
-//             uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
-//             p.variables[parts[1]] = val1 + val2;
-//         }
-//     } else if (command == "PRINT") {
-//         if (parts.size() > 1) {
-//             std::string output = parts[1];
-//             if (p.variables.count(output)) {
-//                 outfile << p.variables[output] << std::endl;
-//             } else {
-//                 outfile << trim_quotes(output) << std::endl;
-//             }
-//         }
-//     } else if (command == "SLEEP") {
-//         if (parts.size() == 2) {
-//             int sleep_cycles = std::stoi(parts[1]);
-//             // This is a simplification. A real implementation would involve the scheduler.
-//             // For now, we can simulate it with a delay, but it will block the core.
-//             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder
-//             outfile << "Slept for " << sleep_cycles << " ticks." << std::endl;
-//         }
-//     }
+auto resolve = [&](const std::string& tok,
+                   const std::unordered_map<std::string,uint16_t>& vars,
+                   bool& ok) -> uint16_t
+{
+    // Assume success until something goes wrong
+    ok = true;
 
-//     outfile.close();
-// }
+    // 1. If it's a known variable, return its value
+    if (auto it = vars.find(tok); it != vars.end())
+        return it->second;
+
+    // 2. Otherwise try it as a literal number
+    try {
+        return static_cast<uint16_t>(std::stoi(tok));
+    }
+    catch (const std::exception&) {
+        ok = false;            // parsing failed
+        return 0;              
+    }
+};
+
+
+    std::cout <<  " \033[35m" << command << "\033[0m" << std::endl;
   if (command == "DECLARE") {
         // DECLARE variable_name value
         if (parts.size() == 3) {
@@ -75,31 +67,36 @@ void CPU_Core::execute_command(Process &p)
         } else {
             outfile << "Executing DECLARE command: " << command_str << std::endl;
         }
-    } else if (command == "ADD") {
-        // ADD result_variable operand1 operand2
-        if (parts.size() == 3) {
-            // Resolve operand1: check if it's a variable or a literal
-            uint16_t val1 = p.variables.count(parts[1]) ? p.variables[parts[1]] : std::stoi(parts[1]);
-            // Resolve operand2: check if it's a variable or a literal
-            uint16_t val2 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
-            int result = val1 + val2;
-            outfile << "ADD: " << result << " = " << val1 << " + " << val2 << " (Result: " << result << ")" << std::endl;
-        } else {
-            outfile << "Executing ADD command: " << command_str << std::endl;
-        }
-    } else if (command == "SUBTRACT") {
-        // SUB result_variable operand1 operand2
-        if (parts.size() == 3) {
-            // Resolve operand1: check if it's a variable or a literal
-            uint16_t val1 = p.variables.count(parts[1]) ? p.variables[parts[1]] : std::stoi(parts[1]);
-            // Resolve operand2: check if it's a variable or a literal
-            uint16_t val2 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
-            int result = val1 - val2;
-            outfile << "SUBTRACT: " << result << " = " << val1 << " - " << val2 << " (Result: " << result << ")" << std::endl;
-        } else {
-            outfile << "Executing SUBTRACT command: " << command_str << std::endl;
-        }
-    }  else if (command == "PRINT") {
+    }else if (command == "ADD" || command == "SUBTRACT"){
+            if (parts.size() == 3)
+            {
+                bool ok1, ok2;
+                uint16_t val1 = resolve(parts[1], p.variables, ok1);
+                uint16_t val2 = resolve(parts[2], p.variables, ok2);
+
+                if (ok1 && ok2)            // both operands parsed successfully
+                {
+                    int result = (command == "ADD")
+                            ? int(val1) + int(val2)
+                            : int(val1) - int(val2);
+
+                    outfile << command << ": " << result
+                            << " = " << val1
+                            << (command == "ADD" ? " + " : " - ")
+                            << val2 << " (Result: " << result << ")\n";
+                }
+                else                       // at least one operand was invalid
+                {
+                    outfile << "Executing " << command
+                            << " command (raw): " << command_str << '\n';
+                }
+            }
+            else
+            {
+                outfile << "Executing " << command
+                        << " command (raw): " << command_str << '\n';
+            }
+        }else if (command == "PRINT") {
         // PRINT variable_name or "string literal"
         if (parts.size() > 1) {
             std::string output_target = parts[1];
