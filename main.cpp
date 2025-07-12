@@ -34,12 +34,11 @@ void generate_memory_report(int tick)
     int process_count = g_memory_manager.get_process_count_in_memory();
     size_t fragmentation_bytes = g_memory_manager.calculate_external_fragmentation();
     // The spec asks for KB, so divide by 1024
-    size_t fragmentation_kb = fragmentation_bytes / 1024;
 
     // Write to file, matching the spec format
     report_file << "Timestamp: (" << time_buf << ")\n";
     report_file << "Number of processes in memory: " << process_count << "\n";
-    report_file << "Total external fragmentation in KB: " << fragmentation_kb << "\n";
+    report_file << "Total external fragmentation in B: " << fragmentation_bytes << "\n";
     report_file << g_memory_manager.generate_memory_snapshot(g_running_list.get_all());
 
     report_file.close();
@@ -114,15 +113,21 @@ void memory_reporter_thread()
 
 void process_generator_thread()
 {
-    int process_counter = 1;
+    int process_counter = 1; // This will now be the PID
     while (!g_shutdown)
     {
         if (g_generate_processes)
         {
-            std::string name = "p" + std::to_string(process_counter++);
-            Process new_process(name, process_counter, g_config);
+            // Use the current counter value for both name and PID
+            std::string name = "p" + std::to_string(process_counter);
+            Process new_process(name, process_counter, g_config); // PID is now process_counter
+
             g_ready_queue.push(new_process);
-            std::cout << "[Generator] Created process " << name << std::endl;
+            std::cout << "[Generator] Created process " << name << " with PID " << process_counter << std::endl;
+
+            // Increment the counter for the *next* process
+            process_counter++;
+            
             std::this_thread::sleep_for(std::chrono::milliseconds(g_config.batch_process_freq));
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Check flag periodically
