@@ -77,27 +77,25 @@ void CPU_Core::execute_command(Process &p)
         }
     } else if (command == "ADD") {
         // ADD result_variable operand1 operand2
-        if (parts.size() == 4) {
-            std::string result_var = parts[1];
+        if (parts.size() == 3) {
             // Resolve operand1: check if it's a variable or a literal
-            uint16_t val1 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+            uint16_t val1 = p.variables.count(parts[1]) ? p.variables[parts[1]] : std::stoi(parts[1]);
             // Resolve operand2: check if it's a variable or a literal
-            uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
-            p.variables[result_var] = val1 + val2;
-            outfile << "ADD: " << result_var << " = " << val1 << " + " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
+            uint16_t val2 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+            int result = val1 + val2;
+            outfile << "ADD: " << result << " = " << val1 << " + " << val2 << " (Result: " << result << ")" << std::endl;
         } else {
             outfile << "Executing ADD command: " << command_str << std::endl;
         }
     } else if (command == "SUBTRACT") {
-        // ADD result_variable operand1 operand2
-        if (parts.size() == 4) {
-            std::string result_var = parts[1];
+        // SUB result_variable operand1 operand2
+        if (parts.size() == 3) {
             // Resolve operand1: check if it's a variable or a literal
-            uint16_t val1 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+            uint16_t val1 = p.variables.count(parts[1]) ? p.variables[parts[1]] : std::stoi(parts[1]);
             // Resolve operand2: check if it's a variable or a literal
-            uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
-            p.variables[result_var] = val1 + val2;
-            outfile << "SUBTRACT: " << result_var << " = " << val1 << " - " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
+            uint16_t val2 = p.variables.count(parts[2]) ? p.variables[parts[2]] : std::stoi(parts[2]);
+            int result = val1 - val2;
+            outfile << "SUBTRACT: " << result << " = " << val1 << " - " << val2 << " (Result: " << result << ")" << std::endl;
         } else {
             outfile << "Executing SUBTRACT command: " << command_str << std::endl;
         }
