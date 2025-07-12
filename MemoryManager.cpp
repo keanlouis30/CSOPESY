@@ -35,6 +35,7 @@ void MemoryManager::merge_free_blocks() {
 }
 
 // First-Fit Allocation Logic
+// Find the first free block large enough
 bool MemoryManager::allocate(Process& process, size_t required_size) {
     std::lock_guard<std::mutex> lock(mtx);
 
@@ -72,6 +73,7 @@ bool MemoryManager::allocate(Process& process, size_t required_size) {
     return false; // No suitable block found
 }
 
+// Frees a block
 void MemoryManager::deallocate(int process_id) {
     std::lock_guard<std::mutex> lock(mtx);
     for (auto& block : memory_map) {
@@ -85,6 +87,7 @@ void MemoryManager::deallocate(int process_id) {
     }
 }
 
+// Tells how much free memory exists
 size_t MemoryManager::calculate_external_fragmentation() {
     std::lock_guard<std::mutex> lock(mtx);
     size_t total_free_mem = 0;
@@ -100,6 +103,7 @@ size_t MemoryManager::calculate_external_fragmentation() {
     return total_free_mem;
 }
 
+// Counts the current allocated processes
 int MemoryManager::get_process_count_in_memory() {
     std::lock_guard<std::mutex> lock(mtx);
     int count = 0;
@@ -111,6 +115,7 @@ int MemoryManager::get_process_count_in_memory() {
     return count;
 }
 
+// Self explanatory
 std::string MemoryManager::generate_memory_snapshot(const std::vector<Process>& running_processes) {
     std::lock_guard<std::mutex> lock(mtx);
     std::stringstream ss;
