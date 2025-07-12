@@ -166,14 +166,14 @@ void Process::generate_instructions(const Config &config)
                         int potential_expansion = 1 + (body_instructions * for_iterations) + 1;
                         if (potential_expansion <= (num_instructions - expanded) && potential_expansion <= remaining)
                         {
-                            ss << "FOR " << for_iterations << " {";
+                            ss << "FOR " << for_iterations << " { ... }";
                             commands.emplace_back(ss.str());
                             --remaining;
                             ++expanded;
                             int body_remaining = body_instructions;
                             int body_expanded = 0;
                             generate(nesting + 1, body_remaining, body_expanded);
-                            commands.emplace_back("}");
+                            // commands.emplace_back("}");
                             remaining -= (body_instructions - body_remaining);
                             expanded += (body_expanded * for_iterations) + 1;
                             for_generated = true;
