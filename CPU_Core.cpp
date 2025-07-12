@@ -97,7 +97,7 @@ void CPU_Core::execute_command(Process &p)
             // Resolve operand2: check if it's a variable or a literal
             uint16_t val2 = p.variables.count(parts[3]) ? p.variables[parts[3]] : std::stoi(parts[3]);
             p.variables[result_var] = val1 + val2;
-            outfile << "SUBTRACT: " << result_var << " = " << val1 << " + " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
+            outfile << "SUBTRACT: " << result_var << " = " << val1 << " - " << val2 << " (Result: " << p.variables[result_var] << ")" << std::endl;
         } else {
             outfile << "Executing SUBTRACT command: " << command_str << std::endl;
         }
@@ -128,7 +128,7 @@ void CPU_Core::execute_command(Process &p)
         }
     } else {
         // Log unknown commands
-        outfile << "Executing Command: " << command << std::endl;
+        outfile << "Executing Command: " << command_str << std::endl;
     }
 
     // Close the log file.
