@@ -219,6 +219,7 @@ int main()
         {
             exit = 9;
         }
+        else
         {
             std::cout << "\033[31mUnknown Command. Please run 'initialize' first.\033[0m" << std::endl;
         }
