@@ -5,11 +5,20 @@
 #include <iostream>
 #include <functional>
 
-Process::Process(std::string n, int p, const Config &config)
-    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1)
-{
+static bool power(size_t x) {
+    return x >= 64 && x <= 65536 && (x & (x - 1)) == 0;
+}
 
-    initialize_virtual_memory(config.mem_per_proc, config.mem_per_frame);
+Process::Process(std::string n, size_t mem_size, int p, const Config &config, bool generate_inst)
+    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1), memory_start_address(0), memory_size(mem_size)
+{
+    std::unordered_map<std::string, uint16_t> variable_table;
+    uint16_t next_offset = 0;
+
+    if (!power(mem_size)) {
+        std::cerr << "invalid memory allocation" << std::endl;
+        throw std::invalid_argument("invalid memory allocation");
+    }
 
     // Set creation timestamp
     time_t now = time(nullptr);
@@ -18,7 +27,10 @@ Process::Process(std::string n, int p, const Config &config)
     creation_timestamp = buf;
 
     // Generate instructions
-    generate_instructions(config);
+    if (generate_inst)
+    {
+        generate_instructions(config);
+    }
     totalCommands = commands.size();
 
     // Set quantum for RR
@@ -26,11 +38,6 @@ Process::Process(std::string n, int p, const Config &config)
     quantum_remaining = quantum_max;
 }
 
-void Process::initialize_virtual_memory(size_t virtual_memory_size, size_t page_size)
-{
-    int num_pages = (virtual_memory_size + page_size - 1) / page_size;
-    page_table.resize(num_pages);
-}
 
 void Process::generate_instructions(const Config &config)
 {

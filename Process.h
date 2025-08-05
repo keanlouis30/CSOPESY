@@ -17,6 +17,8 @@ public:
     int pid;
     std::vector<std::string> commands;
     std::unordered_map<std::string, uint16_t> variables;
+    std::unordered_map<std::string, uint16_t> variable_table;
+    uint16_t next_offset;
     int totalCommands;
     Status status;
     bool has_page_fault = false; 
@@ -31,7 +33,7 @@ public:
 
     std::vector<PageTableEntry> page_table;
 
-    Process(std::string n, int p, const Config& config); 
+    Process(std::string n, size_t mem_size, int p, const Config& config, bool generate_inst); 
 
     void initialize_virtual_memory(size_t virtual_memory_size, size_t page_size);
 

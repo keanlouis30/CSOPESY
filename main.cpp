@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <string>
 #include <functional>
+#include <random>
 
 Config g_config;
 ReadyQueue g_ready_queue;
@@ -195,6 +196,66 @@ void memory_reporter_thread()
     }
 }
 
+size_t rand_memory()
+{
+    static const std::array<size_t, 11> valid_sizes = {
+        64, 128, 256, 512,
+        1024, 2048, 4096, 8192,
+        16384, 32768, 65536
+    };
+
+    // Step 2: Randomly select a memory size
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, valid_sizes.size() - 1);
+    size_t memory_size = valid_sizes[dist(gen)];
+
+    return memory_size;
+}
+
+bool is_valid_memory_size(size_t mem_size) {
+
+    // range [2^6, 2^16] = [64, 65536]
+    if (mem_size < 64 || mem_size > 65536) {
+        return false;
+    }
+
+    // power of 2
+    if ((mem_size & (mem_size - 1)) != 0) {
+        return false;
+    }
+
+    return true;
+}
+
+// Helper to trim whitespace
+std::string trim(const std::string& s) {
+    size_t start = s.find_first_not_of(" \t\r\n");
+    size_t end = s.find_last_not_of(" \t\r\n");
+    return (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+}
+
+// Helper to trim surrounding double quotes
+std::string trim_inst(const std::string& s) {
+    if (s.size() >= 2 && s.front() == '"' && s.back() == '"') {
+        return s.substr(1, s.size() - 2);
+    }
+    return s;
+}
+
+// Split by ';'
+std::vector<std::string> split(const std::string& input) {
+    std::vector<std::string> commands;
+    std::stringstream ss(input);
+    std::string item;
+
+    while (std::getline(ss, item, ';')) {
+        commands.push_back(trim(item));
+    }
+
+    return commands;
+}
+
 void process_generator_thread()
 {
     int process_counter = 1; // This will now be the PID
@@ -203,11 +264,12 @@ void process_generator_thread()
         if (g_generate_processes)
         {
             // Use the current counter value for both name and PID
+            size_t mem = rand_memory();
             std::string name = "p" + std::to_string(process_counter);
-            Process new_process(name, process_counter, g_config); // PID is now process_counter
+            Process new_process(name, mem, process_counter, g_config, true); // PID is now process_counter
 
             g_ready_queue.push(new_process);
-            std::cout << "[Generator] Created process " << name << " with PID " << process_counter << std::endl;
+            std::cout << "[Generator] Created process " << name << " with PID " << process_counter << "and Memory Size" << mem << std::endl;
 
             // Increment the counter for the *next* process
             process_counter++;
@@ -321,8 +383,9 @@ int main()
             if (input == "help")
             {
                 std::cout << "  screen -ls    - Lists all running and finished processes." << std::endl;
-                std::cout << "  screen -s <name> - Create a new screen/process." << std::endl;
+                std::cout << "  screen -s <name> <memory size>- Create a new screen/process." << std::endl;
                 std::cout << "  screen -r <name> - Resume/view an existing screen." << std::endl;
+                std::cout << "  screen -c <process_name> <process_memory_size> <instructions> - Resume/view an existing screen." << std::endl;
                 std::cout << "  scheduler-start - Start the scheduler." << std::endl;
                 std::cout << "  scheduler-stop - Stop the scheduler." << std::endl;
                 std::cout << "  report-util   - Generate utilization report." << std::endl;
@@ -345,55 +408,48 @@ int main()
             {
                 if (input == "screen -ls")
                 {
-                    system("cls");
-                    // system("clear");
+                    system("cls");  // Use "clear" on Linux/macOS if needed
                     std::stringstream report;
-                    // CPU Usage
+
                     int busy_cores = 0;
-                    for (const auto &p : g_running_list.get_all())
+                    for (const auto& p : g_running_list.get_all())
                     {
-                        if (p.status == RUNNING)
-                        {
-                            busy_cores++;
-                        }
+                        if (p.status == RUNNING) busy_cores++;
                     }
-                    float utilization = (g_config.num_cpu > 0) ? (static_cast<float>(busy_cores) / g_config.num_cpu) * 100.0f : 0.0f;
-                    report << "CPU Utilization: " << std::fixed << std::setprecision(2) << utilization << "%\n";
+
+                    float utilization = (g_config.num_cpu > 0)
+                        ? (static_cast<float>(busy_cores) / g_config.num_cpu) * 100.0f
+                        : 0.0f;
+
+                    report << "CPU Utilization: " << std::fixed << std::setprecision(2)
+                        << utilization << "%\n";
                     report << "Cores Used: " << busy_cores << " / " << g_config.num_cpu << "\n\n";
 
                     std::cout << report.str();
-                    std::cout << "\n";
                     std::cout << "--------------------------------------------------------\n";
 
+                    // Running processes
                     std::cout << "Running processes:\n";
                     auto running = g_running_list.get_all();
                     if (running.empty())
-                    {
                         std::cout << "  (None)\n";
-                    }
                     else
                     {
-                        for (const auto &p : running)
+                        for (const auto& p : running)
                         {
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
-                                      << "Core: " << p.assigned_core_id << "\t"
-                                      << p.commandCounter << " / " << p.totalCommands;
-
-                            std::cout << "\n";
+                                    << "Core: " << p.assigned_core_id << "\t"
+                                    << p.commandCounter << " / " << p.totalCommands << "\n";
                         }
                     }
 
-                    std::cout << "\n";
-                    std::cout << "\n";
-                    std::cout << "Finished processes:\n";
+                    std::cout << "\nFinished processes:\n";
                     auto finished = g_finished_list.get_all();
                     if (finished.empty())
-                    {
                         std::cout << "  (None)\n";
-                    }
                     else
                     {
-                        for (const auto &p : finished)
+                        for (const auto& p : finished)
                         {
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
                                       << "Finished\t"
@@ -404,31 +460,117 @@ int main()
                 }
                 else if (input.rfind("screen -s ", 0) == 0)
                 {
-                    screenName = input.substr(10);
-                    // Check if a process with this name already exists in any list
-                    if (g_ready_queue.exists(screenName) || g_running_list.exists(screenName) || g_finished_list.exists(screenName))
-                    {
-                        std::cout << "Process or screen \"" << screenName << "\" already exists.\n";
-                    }
-                    else
-                    {
-                        Process new_process(screenName, process_id_counter++, g_config);
-                        g_ready_queue.push(new_process);
+                    std::string remainder = input.substr(std::string("screen -s ").length());
+                    std::istringstream iss(remainder);
+                    std::string screenName, mem_size_str;
 
-                        screens.emplace(screenName, [=]()
-                                        { Console::display(screenName, g_ready_queue, g_running_list, g_finished_list); });
+                    iss >> screenName >> mem_size_str;
 
-                        screens[screenName]();
+                    try {
+                        size_t memory_size = std::stoul(mem_size_str);
+
+                        if (g_ready_queue.exists(screenName) || g_running_list.exists(screenName) || g_finished_list.exists(screenName))
+                        {
+                            std::cout << "Process or screen \"" << screenName << "\" already exists.\n";
+                        }
+                        else if (!is_valid_memory_size(memory_size))
+                        {
+                            std::cout << "Invalid memory size. Must be a power of two between 64 and 65536.\n";
+                        }
+                        else
+                        {
+                            std::cout << "Name: " << screenName << "\nMemory: " << memory_size << " bytes\n";
+                            Process new_process(screenName, memory_size, process_id_counter++, g_config, true);
+                            g_ready_queue.push(new_process);
+
+                            screens.emplace(screenName, [=]() {
+                                Console::display(screenName, g_ready_queue, g_running_list, g_finished_list);
+                            });
+
+                            screens[screenName]();
+                        }
+                    } catch (const std::invalid_argument& e) {
+                        std::cout << "Invalid memory size: not a number.\n";
+                    } catch (const std::out_of_range& e) {
+                        std::cout << "Invalid memory size: value too large.\n";
                     }
                 }
                 else if (input.rfind("screen -r ", 0) == 0)
                 {
-                    screenName = input.substr(10);
+                    std::string screenName = input.substr(std::string("screen -r ").length());
                     Console::display(screenName, g_ready_queue, g_running_list, g_finished_list);
+                }
+                else if (input.rfind("screen -c ", 0) == 0)
+                {
+                    std::istringstream iss(input.substr(10));
+                    std::string processName;
+                    std::string memoryStr;
+                    std::string instructionsRaw;
+
+                    iss >> processName >> memoryStr;
+
+                    // Get everything after memory size as instruction string
+                    std::getline(iss, instructionsRaw);
+                    instructionsRaw = trim_inst(trim(instructionsRaw));
+
+                    try {
+                        size_t memorySize = std::stoul(memoryStr);
+
+                        if (!is_valid_memory_size(memorySize)) {
+                            std::cout << "Invalid memory size. Must be a power of two between 64 and 65536.\n";
+                        }
+
+                        if (g_ready_queue.exists(processName) || g_running_list.exists(processName) || g_finished_list.exists(processName)) {
+                            std::cout << "Process \"" << processName << "\" already exists.\n";
+                        }
+
+                        std::vector<std::string> instructions = split(instructionsRaw);
+
+                        for (auto& instr : instructions) {
+                            instr = trim(instr);
+                        }
+
+                        // Check instruction count
+                        if (instructions.size() < 1 || instructions.size() > 50) {
+                            std::cout << "Invalid instruction count. Must be between 1 and 50.\n";
+                        } 
+
+                        Process newProcess(processName, memorySize, process_id_counter++, g_config, false);
+                        newProcess.commands = instructions;
+                        newProcess.totalCommands = instructions.size();  // <- Fix!
+                        g_ready_queue.push(newProcess);
+
+                        std::cout << "Loaded instructions for " << processName << ":\n";
+                        for (const auto& instr : instructions) {
+                            std::cout << instr << std::endl;
+                        }
+                        std::cout << "Created process \"" << processName << "\" with " << instructions.size() << " instructions.\n";
+                        std::cout << "[DEBUG] Commands size for process " << processName << ": " << newProcess.commands.size() << "\n";
+
+
+                        screens.emplace(processName, [&]() {
+                            Console::display(processName, g_ready_queue, g_running_list, g_finished_list);
+                        });
+
+
+                        screens[processName]();
+                    }
+                    catch (const std::invalid_argument&) {
+                        std::cout << "Invalid memory size: not a number.\n";
+                    }
+                    catch (const std::out_of_range&) {
+                        std::cout << "Invalid memory size: value too large.\n";
+                    }
                 }
                 else
                 {
-                    std::cout << "\033[31m" << "Enter 'screen -ls' to list processes, 'screen -s <name>' to create, or 'screen -r <name>' to resume." << "\033[0m" << std::endl;
+                    std::cout << "\033[31m"
+                            << "Usage:\n"
+                            << "  screen -ls                     : List processes\n"
+                            << "  screen -s <name> <mem_size>    : Create process\n"
+                            << "  screen -r <name>               : Resume process\n"
+                            << "  screen -c <name> <mem_size> "<<"<" << "Instructions" << ">" << ": Clear screen\n"
+                            << "\033[0m\n";
                 }
             }
             else if (input == "scheduler-start")
