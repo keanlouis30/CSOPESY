@@ -167,7 +167,7 @@ int main()
         exit(1);
     }
 
-    g_memory_manager.initialize(g_config.max_overall_mem);
+    g_memory_manager.initialize(g_config.max_overall_mem, g_config.mem_per_frame);
 
     std::unordered_map<std::string, std::function<void()>> screens; // changed this because Console is static
     std::vector<CPU_Core *> cpu_cores;
@@ -239,6 +239,10 @@ int main()
                 std::cout << "  screen -ls    - Lists all running and finished processes." << std::endl;
                 std::cout << "  screen -s <name> - Create a new screen/process." << std::endl;
                 std::cout << "  screen -r <name> - Resume/view an existing screen." << std::endl;
+                std::cout << "  process-smi   - Show memory and process information." << std::endl;
+                std::cout << "  vmstat        - Show detailed memory statistics." << std::endl;
+                std::cout << "  test-paging   - Test the demand paging system." << std::endl;
+                std::cout << "  test-separate-pages - Test separate instruction/variable pages." << std::endl;
                 std::cout << "  scheduler-start - Start the scheduler." << std::endl;
                 std::cout << "  scheduler-stop - Stop the scheduler." << std::endl;
                 std::cout << "  report-util   - Generate utilization report." << std::endl;
@@ -359,6 +363,47 @@ int main()
             {
                 generate_report();
             }
+            else if (input == "process-smi")
+            {
+                std::cout << "=== Process and Memory Information ===\n";
+                
+                // Memory summary
+                size_t total_memory = g_config.max_overall_mem;
+                size_t used_memory = g_memory_manager.get_used_frames() * g_config.mem_per_frame;
+                size_t free_memory = g_memory_manager.get_free_frames() * g_config.mem_per_frame;
+                
+                std::cout << "Memory Summary:\n";
+                std::cout << "  Total Memory: " << total_memory << " bytes\n";
+                std::cout << "  Used Memory: " << used_memory << " bytes\n";
+                std::cout << "  Free Memory: " << free_memory << " bytes\n";
+                std::cout << "  Utilization: " << std::fixed << std::setprecision(1) 
+                          << (static_cast<double>(used_memory) / total_memory) * 100.0 << "%\n\n";
+                
+                // Running processes
+                std::cout << "Running Processes:\n";
+                auto running = g_running_list.get_all();
+                if (running.empty())
+                {
+                    std::cout << "  (None)\n";
+                }
+                else
+                {
+                    for (const auto& p : running)
+                    {
+                        std::cout << "  " << p.name << " (PID: " << p.pid << ")\n";
+                        std::cout << "    Memory: " << p.memory_size << " bytes\n";
+                        std::cout << "    Status: " << (p.status == RUNNING ? "Running" : "Blocked") << "\n";
+                        std::cout << "    Core: " << p.assigned_core_id << "\n";
+                    }
+                }
+                
+                std::cout << "\n";
+            }
+            else if (input == "vmstat")
+            {
+                std::cout << g_memory_manager.generate_vmstat_report();
+                std::cout << "\nNote: Page fault rate is a key metric for evaluation.\n";
+            }
             else if (input == "test")
             {
                 g_generate_processes = true;
@@ -366,6 +411,100 @@ int main()
                 std::this_thread::sleep_for(std::chrono::seconds(2));
                 g_generate_processes = false;
                 std::cout << "Automatic process generation stopped." << std::endl;
+            }
+            else if (input == "test-paging")
+            {
+                std::cout << "=== Testing Demand Paging System ===\n";
+                
+                // Create a test process with page table
+                int test_pid = 999;
+                size_t test_memory_size = 1024; // 1KB
+                
+                if (g_memory_manager.create_page_table(test_pid, test_memory_size)) {
+                    std::cout << "Created page table for test process " << test_pid << "\n";
+                    
+                    // Test memory access to trigger page faults
+                    std::cout << "Testing memory access (should trigger page faults):\n";
+                    
+                    // Access different pages to trigger page faults
+                    for (size_t addr = 0; addr < test_memory_size; addr += g_config.mem_per_frame) {
+                        bool success = g_memory_manager.access_memory(test_pid, addr, false); // Read access
+                        if (success) {
+                            std::cout << "  Access to address 0x" << std::hex << addr << std::dec 
+                                      << " successful (page " << addr / g_config.mem_per_frame << ")\n";
+                        } else {
+                            std::cout << "  Access to address 0x" << std::hex << addr << std::dec 
+                                      << " failed\n";
+                        }
+                    }
+                    
+                    // Test write access
+                    std::cout << "Testing write access:\n";
+                    bool write_success = g_memory_manager.access_memory(test_pid, 0, true);
+                    std::cout << "  Write to address 0x0: " << (write_success ? "successful" : "failed") << "\n";
+                    
+                    // Show statistics
+                    std::cout << "\nPaging Statistics:\n";
+                    std::cout << "  Pages paged in: " << g_memory_manager.get_pages_paged_in() << "\n";
+                    std::cout << "  Pages paged out: " << g_memory_manager.get_pages_paged_out() << "\n";
+                    
+                    // Clean up
+                    g_memory_manager.remove_page_table(test_pid);
+                    std::cout << "Test completed.\n";
+                } else {
+                    std::cout << "Failed to create page table for test.\n";
+                }
+            }
+            else if (input == "test-separate-pages")
+            {
+                std::cout << "=== Testing Separate Instruction and Variable Pages ===\n";
+                
+                // Create a test process with separate instruction and variable pages
+                int test_pid = 888;
+                size_t instruction_count = 50;  // 50 instructions
+                size_t variable_count = 32;     // 32 variables (uint16_t)
+                
+                if (g_memory_manager.create_process_memory_layout(test_pid, instruction_count, variable_count)) {
+                    std::cout << "Created memory layout for test process " << test_pid << "\n";
+                    std::cout << "  Instructions: " << instruction_count << "\n";
+                    std::cout << "  Variables: " << variable_count << "\n";
+                    
+                    // Test instruction access
+                    std::cout << "\nTesting instruction access:\n";
+                    for (int i = 0; i < 10; i++) {
+                        bool success = g_memory_manager.access_instruction(test_pid, i, false);
+                        std::cout << "  Access instruction " << i << ": " << (success ? "successful" : "failed") << "\n";
+                    }
+                    
+                    // Test variable access
+                    std::cout << "\nTesting variable access:\n";
+                    for (int i = 0; i < 5; i++) {
+                        bool success = g_memory_manager.access_variable(test_pid, i, true); // Write access
+                        std::cout << "  Access variable " << i << ": " << (success ? "successful" : "failed") << "\n";
+                    }
+                    
+                    // Show detailed statistics
+                    std::cout << "\nDetailed Statistics:\n";
+                    std::cout << "  Pages paged in: " << g_memory_manager.get_pages_paged_in() << "\n";
+                    std::cout << "  Pages paged out: " << g_memory_manager.get_pages_paged_out() << "\n";
+                    std::cout << "  Page faults: " << g_memory_manager.get_page_faults() << "\n";
+                    std::cout << "  Page fault rate: " << std::fixed << std::setprecision(4) 
+                              << g_memory_manager.get_page_fault_rate() * 100.0 << "%\n";
+                    
+                    // Show process memory layout
+                    std::cout << "\nProcess Memory Layout:\n";
+                    std::cout << g_memory_manager.generate_process_memory_report(test_pid);
+                    
+                    // Show page tables
+                    std::cout << "\nPage Tables:\n";
+                    std::cout << g_memory_manager.generate_page_table_report(test_pid);
+                    
+                    // Clean up
+                    g_memory_manager.remove_process_memory_layout(test_pid);
+                    std::cout << "Test completed.\n";
+                } else {
+                    std::cout << "Failed to create memory layout for test.\n";
+                }
             }
             else if (input == "exit")
             {
