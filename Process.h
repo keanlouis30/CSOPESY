@@ -31,6 +31,10 @@ public:
 
     std::vector<PageTableEntry> page_table;
 
+    //Process new_process(screenName, process_id_counter++, g_config, user_commands);
+
+    
+    Process(std::string n, int p, const Config& config, const std::vector<std::string>& user_commands); 
     Process(std::string n, int p, const Config& config); 
 
     void initialize_virtual_memory(size_t virtual_memory_size, size_t page_size);

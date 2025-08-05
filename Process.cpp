@@ -26,6 +26,27 @@ Process::Process(std::string n, int p, const Config &config)
     quantum_remaining = quantum_max;
 }
 
+Process::Process(std::string n, int p, const Config &config, const std::vector<std::string>& user_commands)
+    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1)
+{
+    // Initialize virtual memory
+    initialize_virtual_memory(config.mem_per_proc, config.mem_per_frame);
+
+    // Set creation timestamp
+    time_t now = time(nullptr);
+    char buf[100];
+    strftime(buf, sizeof(buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
+    creation_timestamp = buf;
+
+    // Use the user-provided commands
+    commands = user_commands;
+    totalCommands = commands.size();
+
+    // Set quantum for RR
+    quantum_max = config.quantum_cycles;
+    quantum_remaining = quantum_max;
+}
+
 void Process::initialize_virtual_memory(size_t virtual_memory_size, size_t page_size)
 {
     int num_pages = (virtual_memory_size + page_size - 1) / page_size;
@@ -67,7 +88,7 @@ void Process::generate_instructions(const Config &config)
         while (remaining > 0 && expanded < num_instructions)
         {
             bool can_try_for = (nesting < max_nesting && remaining >= 3 && expanded < num_instructions - 2);
-            int instruction_type = get_random(0, can_try_for ? 5 : 4);
+            int instruction_type = get_random(0, can_try_for ? 6 : 7);
             std::stringstream ss;
 
             switch (instruction_type)
@@ -196,6 +217,38 @@ void Process::generate_instructions(const Config &config)
                     instruction_type = get_random(0, 4);
                     continue;
                 }
+                break;
+            }
+            case 6:  //READ
+            { // READ (var, memory_address)
+                // Check if we can declare a new variable.
+                if (variables.size() >= 32) {
+                    // If the variable limit is reached, skip this instruction and try again.
+                    // Or, you can choose to read into an existing variable.
+                    // Let's create a placeholder instruction for now.
+                    continue;
+                }
+
+                std::string var_name = get_unique_var(var_counter);
+                uint32_t memory_address = get_random(0, config.mem_per_proc - 1); // Assuming virtual_memory_size is available in config
+
+                ss << "READ " << var_name << " 0x" << std::hex << memory_address;
+                commands.emplace_back(ss.str());
+
+                --remaining;
+                ++expanded;
+                break;
+            }
+            case 7:  //WRITE
+            { // WRITE(memory_address, value)
+                uint32_t memory_address = get_random(0, config.mem_per_proc - 1);
+                uint16_t value = get_random(0, 65535); // Max value for uint16
+
+                ss << "WRITE 0x" << std::hex << memory_address << " " << value;
+                commands.emplace_back(ss.str());
+
+                --remaining;
+                ++expanded;
                 break;
             }
             }
