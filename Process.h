@@ -16,6 +16,8 @@ public:
     int pid;
     std::vector<std::string> commands;
     std::unordered_map<std::string, uint16_t> variables;
+    std::unordered_map<std::string, uint16_t> variable_table;
+    uint16_t next_offset;
     int totalCommands;
     Status status;
     std::string creation_timestamp;
@@ -26,7 +28,7 @@ public:
     size_t memory_start_address;
     size_t memory_size;
 
-    Process(std::string n, int p, const Config& config); 
+    Process(std::string n, size_t mem_size, int p, const Config& config, bool generate_inst); 
 
     Process(const Process &) = default;
     Process() = default;

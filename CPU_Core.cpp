@@ -61,13 +61,23 @@ auto resolve = [&](const std::string& tok,
         // DECLARE variable_name value
         if (parts.size() == 3) {
             std::string var_name = parts[1];
-            uint16_t value = std::stoi(parts[2]);
-            p.variables[var_name] = value;
-            outfile << "DECLARE: " << var_name << " set to " << value << std::endl;
-        } else {
-            outfile << "Executing DECLARE command: " << command_str << std::endl;
-        }
-    }else if (command == "ADD" || command == "SUBTRACT"){
+
+            // Check if symbol table (max 32 vars) is full
+            if (p.variables.size() >= 32) {
+                outfile << "DECLARE failed: Symbol table full (max 32 variables)." << std::endl;
+            }
+            // Check if variable already declared
+            else if (p.variables.find(var_name) != p.variables.end()) {
+                outfile << "DECLARE ignored: Variable '" << var_name << "' already declared." << std::endl;
+            }
+            // Otherwise declare it
+            else {
+                p.variables[var_name] = p.next_offset;
+                outfile << "DECLARE: " << var_name 
+                        << " assigned offset " << p.next_offset << std::endl;
+                p.next_offset++;
+            }
+        }else if (command == "ADD" || command == "SUBTRACT"){
             if (parts.size() == 3)
             {
                 bool ok1, ok2;
