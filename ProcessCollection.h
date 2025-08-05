@@ -2,75 +2,108 @@
 
 #include <vector>
 #include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <thread>
 #include <chrono>
+#include <optional>
+#include <algorithm>
+#include <ranges>
 #include "Process.h"
 #include "Globals.h"
-#include <algorithm>
 
 class ProcessCollection
 {
 public:
     std::vector<Process> processes;
-    std::mutex mtx;
+    mutable std::shared_mutex mtx;
 
-    void add(const Process &p)
+    void add(Process p)
     {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::unique_lock<std::shared_mutex> lock(mtx);
         // Avoid duplicates
-        for(auto& proc : processes) {
-            if (proc.pid == p.pid) {
-                proc = p; // Update existing
-                return;
-            }
+        auto it = std::ranges::find_if(processes, [&p](const Process& proc) {
+            return proc.pid == p.pid;
+        });
+        
+        if (it != processes.end()) {
+            *it = std::move(p); // Update existing
+        } else {
+            processes.push_back(std::move(p));
         }
-        processes.push_back(p);
     }
 
     void remove(int pid_to_remove)
     {
-        std::lock_guard<std::mutex> lock(mtx);
-        auto it = std::remove_if(processes.begin(), processes.end(),
-                                 [pid_to_remove](const Process& p) {
-                                     return p.pid == pid_to_remove;
-                                 });
+        std::unique_lock<std::shared_mutex> lock(mtx);
+        auto it = std::ranges::remove_if(processes, [pid_to_remove](const Process& p) {
+            return p.pid == pid_to_remove;
+        });
 
-        if (it != processes.end()) {
-            processes.erase(it, processes.end());
+        if (it.begin() != processes.end()) {
+            processes.erase(it.begin(), it.end());
         }
     }
 
     void clear() {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::unique_lock<std::shared_mutex> lock(mtx);
         processes.clear();
     }
 
-    std::vector<Process> get_all()
+    std::vector<Process> get_all() const
     {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::shared_lock<std::shared_mutex> lock(mtx);
         return processes;
     }
 
-    bool exists(const std::string& name)
+    size_t size() const
     {
-        std::lock_guard<std::mutex> lock(mtx);
-        for (const auto& p : processes) {
-            if (p.name == name) {
-                return true;
-            }
+        std::shared_lock<std::shared_mutex> lock(mtx);
+        return processes.size();
+    }
+
+    bool exists(const std::string& name) const
+    {
+        std::shared_lock<std::shared_mutex> lock(mtx);
+        return std::ranges::any_of(processes, [&name](const Process& p) {
+            return p.name == name;
+        });
+    }
+
+    std::optional<Process> find(const std::string& name) const {
+        std::shared_lock<std::shared_mutex> lock(mtx);
+        auto it = std::ranges::find_if(processes, [&name](const Process& p) {
+            return p.name == name;
+        });
+        
+        if (it != processes.end()) {
+            return *it;
+        }
+        return std::nullopt;
+    }
+
+    bool find(const std::string& name, Process& out_process) const {
+        std::shared_lock<std::shared_mutex> lock(mtx);
+        auto it = std::ranges::find_if(processes, [&name](const Process& p) {
+            return p.name == name;
+        });
+        
+        if (it != processes.end()) {
+            out_process = *it;
+            return true;
         }
         return false;
     }
 
-    bool find(const std::string& name, Process& out_process) {
-        std::lock_guard<std::mutex> lock(mtx);
-        for (const auto& p : processes) {
-            if (p.name == name) {
-                out_process = p;
-                return true;
-            }
+    std::optional<Process> find_by_pid(int pid) const {
+        std::shared_lock<std::shared_mutex> lock(mtx);
+        auto it = std::ranges::find_if(processes, [pid](const Process& p) {
+            return p.pid == pid;
+        });
+        
+        if (it != processes.end()) {
+            return *it;
         }
-        return false;
+        return std::nullopt;
     }
 };

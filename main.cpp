@@ -13,6 +13,9 @@
 #include <iomanip>
 #include <fstream>
 #include <ctime>
+#include <memory>
+#include <optional>
+#include <array>
 
 Config g_config;
 ReadyQueue g_ready_queue;
@@ -324,7 +327,7 @@ int main()
     g_memory_manager.initialize(g_config.max_overall_mem, g_config.mem_per_frame);
 
     std::unordered_map<std::string, std::function<void()>> screens; // changed this because Console is static
-    std::vector<CPU_Core *> cpu_cores;
+    std::vector<std::unique_ptr<CPU_Core>> cpu_cores;
     std::vector<std::thread> core_threads;
     Scheduler scheduler(g_ready_queue, g_running_list, cpu_cores, g_shutdown);
     std::thread scheduler_thread(&Scheduler::run, &scheduler);
@@ -349,13 +352,12 @@ int main()
 
                 for (int i = 0; i < g_config.num_cpu; ++i)
                 {
-                    CPU_Core *core = new CPU_Core(i, g_running_list, g_shutdown);
-                    cpu_cores.push_back(core);
+                    cpu_cores.push_back(std::make_unique<CPU_Core>(i, g_running_list, g_shutdown));
                 }
 
-                for (auto *core : cpu_cores)
+                for (const auto &core : cpu_cores)
                 {
-                    core_threads.emplace_back(&CPU_Core::run, core);
+                    core_threads.emplace_back(&CPU_Core::run, core.get());
                 }
 
                 initialized = true;
@@ -451,9 +453,7 @@ int main()
                         {
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
                                     << "Core: " << p.assigned_core_id << "\t"
-                                    << p.commandCounter << " / " << p.totalCommands << "\n";
-                                      << "Core: " << p.assigned_core_id << "\t"
-                                      << p.commandCounter << " / " << p.totalCommands;
+                                    << p.commandCounter << " / " << p.totalCommands;
 
                             std::cout << "\n";
                         }
@@ -783,10 +783,7 @@ int main()
             std::cout << "[System] Core " << i << " thread has shut down.\n";
         }
 
-        for (auto *core : cpu_cores)
-        {
-            delete core;
-        }
+        // CPU cores are automatically cleaned up by unique_ptr
 
         std::cout << "\033[32m[System] All threads terminated. Goodbye!\033[0m\n";
     }

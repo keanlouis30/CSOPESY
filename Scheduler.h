@@ -3,9 +3,15 @@
 #include <vector>
 #include <atomic>
 #include <mutex>
+#include <shared_mutex>
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <memory>
+#include <optional>
+#include <concepts>
+#include <ranges>
+#include <stop_token>
 
 #include "ReadyQueue.h"
 #include "ProcessCollection.h"
@@ -14,6 +20,7 @@
 #include "Globals.h"
 #include "MemoryManager.h"
 
+// Forward declaration
 void handle_io_request(Process process);
 
 // ========== FCFS Scheduler ==========
@@ -23,102 +30,62 @@ private:
     ReadyQueue &ready_queue;
     ProcessCollection &running_list;
     ProcessCollection &finished_list;
-    std::vector<CPU_Core *> &cpu_cores;
+    std::vector<std::unique_ptr<CPU_Core>> &cpu_cores;
     std::atomic<bool> &shutdown_signal;
+    std::shared_mutex scheduler_mutex;
 
     void handleFinishedProcesses()
     {
-        for (auto *core : cpu_cores)
+        std::shared_lock read_lock(scheduler_mutex);
+        
+        for (const auto &core : cpu_cores)
         {
+            if (!core) continue;
+            
             std::lock_guard<std::mutex> core_lock(core->core_mtx);
-            if (core->current_process != nullptr &&
+            if (core->current_process && 
                 core->current_process->commandCounter >= core->current_process->totalCommands)
             {
-                // std::cout << "Core " << core->get_id()
-                //           << " finished process: " << core->current_process->name << std::endl;
-
                 core->current_process->status = FINISHED;
                 g_finished_list.add(*core->current_process);
-                core->current_process = nullptr;
+                core->current_process.reset();
             }
         }
     }
 
     void assignProcessesToIdleCores()
     {
-        if (!ready_queue.isEmpty())
+        std::shared_lock read_lock(scheduler_mutex);
+        
+        if (ready_queue.isEmpty()) return;
+        
+        for (const auto &core : cpu_cores)
         {
-            for (auto *core : cpu_cores)
+            if (!core || !core->is_idle()) continue;
+            
+            std::optional<Process> next_process = ready_queue.try_pop();
+            if (next_process)
             {
-                if (core->is_idle())
-                {
-                    // std::cout << "Core " << core->get_id()
-                    //           << " is idle, assigning process." << std::endl;
-
-                    Process next_process;
-                    if (ready_queue.pop(next_process))
-                    {
-                        next_process.assigned_core_id = core->get_id();
-                        core->assign_process(next_process);
-                    }
-                }
+                next_process->assigned_core_id = core->get_id();
+                core->assign_process(std::move(*next_process));
             }
         }
     }
 
-    // void generate_memory_report(int tick)
-    // {
-    //     // Create filename
-    //     std::ofstream report_file("memory_stamp_" + std::to_string(tick) + ".txt");
-    //     if (!report_file.is_open())
-    //         return;
-
-    //     // Get timestamp
-    //     time_t now = time(nullptr);
-    //     char time_buf[100];
-    //     strftime(time_buf, sizeof(time_buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
-
-    //     // Get data
-    //     int process_count = g_memory_manager.get_process_count_in_memory();
-    //     size_t fragmentation_bytes = g_memory_manager.calculate_external_fragmentation();
-    //     size_t fragmentation_kb = fragmentation_bytes / 1024;
-
-    //     // Write to file
-    //     report_file << "Timestamp: (" << time_buf << ")\n";
-    //     report_file << "Number of processes in memory: " << process_count << "\n";
-    //     report_file << "Total external fragmentation in KB: " << fragmentation_kb << "\n";
-    //     report_file << g_memory_manager.generate_memory_snapshot(g_running_list.get_all());
-
-    //     report_file.close();
-    // }
-
-    // // This thread waits for the tick counter to change.
-    // void memory_reporter_thread()
-    // {
-    //     int last_tick = 0;
-    //     while (!g_shutdown)
-    //     {
-    //         int current_tick = g_quantum_tick_counter.load();
-    //         if (current_tick > last_tick)
-    //         {
-    //             for (int i = last_tick + 1; i <= current_tick; ++i)
-    //             {
-    //                 generate_memory_report(i);
-    //             }
-    //             last_tick = current_tick;
-    //         }
-    //         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Check periodically
-    //     }
-    // }
-
     void updateRunningList()
     {
+        std::shared_lock read_lock(scheduler_mutex);
         std::lock_guard<std::mutex> lock(running_list.mtx);
+        
         running_list.processes.clear();
-        for (auto *core : cpu_cores)
+        running_list.processes.reserve(cpu_cores.size());
+        
+        for (const auto &core : cpu_cores)
         {
+            if (!core) continue;
+            
             std::lock_guard<std::mutex> core_lock(core->core_mtx);
-            if (core->current_process != nullptr)
+            if (core->current_process)
             {
                 running_list.processes.push_back(*core->current_process);
             }
@@ -129,7 +96,7 @@ public:
     FCFSScheduler(ReadyQueue &ready,
                   ProcessCollection &running,
                   ProcessCollection &finished,
-                  std::vector<CPU_Core *> &cores,
+                  std::vector<std::unique_ptr<CPU_Core>> &cores,
                   std::atomic<bool> &shutdown)
         : ready_queue(ready),
           running_list(running),
@@ -141,12 +108,14 @@ public:
 
     void run()
     {
-        while (!shutdown_signal)
+        using namespace std::chrono_literals;
+        
+        while (!shutdown_signal.load(std::memory_order_acquire))
         {
             handleFinishedProcesses();
             assignProcessesToIdleCores();
             updateRunningList();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(100ms);
         }
     }
 };
@@ -158,89 +127,94 @@ private:
     ReadyQueue &ready_queue;
     ProcessCollection &running_list;
     ProcessCollection &finished_list;
-    std::vector<CPU_Core *> &cpu_cores;
+    std::vector<std::unique_ptr<CPU_Core>> &cpu_cores;
     Config &config;
     std::atomic<bool> &shutdown_signal;
+    std::shared_mutex scheduler_mutex;
 
     void handleFinishedOrQuantumExpired()
     {
-        for (auto *core : cpu_cores)
+        std::shared_lock read_lock(scheduler_mutex);
+        
+        for (const auto &core : cpu_cores)
         {
+            if (!core) continue;
+            
             std::shared_ptr<Process> p;
             {
                 std::lock_guard<std::mutex> core_lock(core->core_mtx);
                 p = core->current_process;
             }
 
-            if (p != nullptr)
+            if (!p) continue;
+
+            if (p->has_page_fault)
             {
-                if (p->has_page_fault)
-                {
-                    std::cout << "[Scheduler] PID " << p->pid << " caused a page fault. Blocking process." << std::endl;
+                std::cout << "[Scheduler] PID " << p->pid << " caused a page fault. Blocking process." << std::endl;
 
-                    Process blocked_process = *p;
-                    blocked_process.status = BLOCKED;
+                Process blocked_process = *p;
+                blocked_process.status = BLOCKED;
+                g_blocked_list.add(blocked_process);
+                core->release_process();
 
-                    g_blocked_list.add(blocked_process);
+                std::jthread(handle_io_request, std::move(blocked_process)).detach();
+                continue;
+            }
 
-                    core->release_process();
-
-                    std::thread(handle_io_request, blocked_process).detach();
-
-                    continue;
-                }
-
-                if (p->commandCounter >= p->totalCommands)
-                {
-                    p->status = FINISHED;
-                    g_finished_list.add(*p);
-
-                    g_memory_manager.remove_process_memory_layout(p->pid);
-
-                    core->release_process();
-                }
-                else if (p->quantum_remaining <= 0)
-                {
-                    Process preempted_process = *p;
-                    preempted_process.status = READY;
-                    preempted_process.assigned_core_id = -1;
-                    ready_queue.push(preempted_process);
-                    core->release_process();
-                    g_quantum_tick_counter++;
-                }
+            if (p->commandCounter >= p->totalCommands)
+            {
+                p->status = FINISHED;
+                g_finished_list.add(*p);
+                g_memory_manager.remove_process_memory_layout(p->pid);
+                core->release_process();
+            }
+            else if (p->quantum_remaining <= 0)
+            {
+                Process preempted_process = *p;
+                preempted_process.status = READY;
+                preempted_process.assigned_core_id = -1;
+                ready_queue.push(std::move(preempted_process));
+                core->release_process();
+                g_quantum_tick_counter.fetch_add(1, std::memory_order_relaxed);
             }
         }
     }
 
     void assignProcessesToIdleCores()
     {
-        if (!ready_queue.isEmpty())
+        std::shared_lock read_lock(scheduler_mutex);
+        
+        if (ready_queue.isEmpty()) return;
+        
+        for (const auto &core : cpu_cores)
         {
-            for (auto *core : cpu_cores)
+            if (!core || !core->is_idle()) continue;
+            
+            std::optional<Process> next_process = ready_queue.try_pop();
+            if (next_process)
             {
-                if (core->is_idle())
-                {
-                    Process next_process;
-                    if (ready_queue.pop(next_process))
-                    {
-                        next_process.quantum_max = config.quantum_cycles;
-                        next_process.quantum_remaining = config.quantum_cycles;
-                        next_process.assigned_core_id = core->get_id();
-                        core->assign_process(next_process);
-                    }
-                }
+                next_process->quantum_max = config.quantum_cycles;
+                next_process->quantum_remaining = config.quantum_cycles;
+                next_process->assigned_core_id = core->get_id();
+                core->assign_process(std::move(*next_process));
             }
         }
     }
 
     void updateRunningList()
     {
+        std::shared_lock read_lock(scheduler_mutex);
         std::lock_guard<std::mutex> lock(running_list.mtx);
+        
         running_list.processes.clear();
-        for (auto *core : cpu_cores)
+        running_list.processes.reserve(cpu_cores.size());
+        
+        for (const auto &core : cpu_cores)
         {
+            if (!core) continue;
+            
             std::lock_guard<std::mutex> core_lock(core->core_mtx);
-            if (core->current_process != nullptr)
+            if (core->current_process)
             {
                 running_list.processes.push_back(*core->current_process);
             }
@@ -251,7 +225,7 @@ public:
     RoundRobinScheduler(ReadyQueue &ready,
                         ProcessCollection &running,
                         ProcessCollection &finished,
-                        std::vector<CPU_Core *> &cores,
+                        std::vector<std::unique_ptr<CPU_Core>> &cores,
                         Config &conf,
                         std::atomic<bool> &shutdown)
         : ready_queue(ready),
@@ -265,30 +239,33 @@ public:
 
     void run()
     {
-        while (!shutdown_signal)
+        using namespace std::chrono_literals;
+        
+        while (!shutdown_signal.load(std::memory_order_acquire))
         {
             handleFinishedOrQuantumExpired();
             assignProcessesToIdleCores();
             updateRunningList();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            std::this_thread::sleep_for(1ms);
         }
     }
 };
 
 // ========== Scheduler Dispatcher ==========
-
 class Scheduler
 {
 private:
     ReadyQueue &ready_queue;
     ProcessCollection &running_list;
-    std::vector<CPU_Core *> &cpu_cores;
+    std::vector<std::unique_ptr<CPU_Core>> &cpu_cores;
     std::atomic<bool> &shutdown_signal;
+    std::unique_ptr<FCFSScheduler> fcfs_scheduler;
+    std::unique_ptr<RoundRobinScheduler> rr_scheduler;
 
 public:
     Scheduler(ReadyQueue &ready,
               ProcessCollection &running,
-              std::vector<CPU_Core *> &cores,
+              std::vector<std::unique_ptr<CPU_Core>> &cores,
               std::atomic<bool> &shutdown);
 
     void run();
