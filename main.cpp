@@ -440,6 +440,10 @@ int main()
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
                                     << "Core: " << p.assigned_core_id << "\t"
                                     << p.commandCounter << " / " << p.totalCommands << "\n";
+                                      << "Core: " << p.assigned_core_id << "\t"
+                                      << p.commandCounter << " / " << p.totalCommands;
+
+                            std::cout << "\n";
                         }
                     }
 

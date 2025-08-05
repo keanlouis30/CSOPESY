@@ -38,6 +38,13 @@ Process::Process(std::string n, size_t mem_size, int p, const Config &config, bo
     quantum_remaining = quantum_max;
 }
 
+// Process::Process(std::string n, int p, const Config &config)
+//     : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1)
+// {
+
+//     initialize_virtual_memory(config.mem_per_proc, config.mem_per_frame);
+// }
+
 
 void Process::generate_instructions(const Config &config)
 {
