@@ -8,40 +8,66 @@
 Config g_config;
 ReadyQueue g_ready_queue;
 ProcessCollection g_running_list;
+ProcessCollection g_blocked_list;
 ProcessCollection g_finished_list;
 MemoryManager g_memory_manager;
 std::atomic<bool> g_shutdown(false);
 std::atomic<bool> g_generate_processes(false);
 std::atomic<int> g_quantum_tick_counter(0);
+std::atomic<long long> g_cpu_ticks_idle(0);
+std::atomic<long long> g_cpu_ticks_active(0);
+std::atomic<long long> g_page_ins(0);
+std::atomic<long long> g_page_outs(0);
 
 void generate_memory_report(int tick)
 {
-    // Create filename
     std::ofstream report_file("memory_stamp_" + std::to_string(tick) + ".txt");
     if (!report_file.is_open())
     {
-        // Optional: Log an error if the file can't be created
         std::cerr << "Error: Could not open memory_stamp_" << tick << ".txt for writing." << std::endl;
         return;
     }
 
-    // Get timestamp
     time_t now = time(nullptr);
     char time_buf[100];
     strftime(time_buf, sizeof(time_buf), "%m/%d/%Y %I:%M:%S%p", localtime(&now));
 
-    // Get data
-    int process_count = g_memory_manager.get_process_count_in_memory();
-    size_t fragmentation_bytes = g_memory_manager.calculate_external_fragmentation();
-    // The spec asks for KB, so divide by 1024
+    int process_count = g_memory_manager.get_active_process_count();
+    size_t free_bytes = g_memory_manager.get_free_memory_in_bytes();
 
-    // Write to file, matching the spec format
     report_file << "Timestamp: (" << time_buf << ")\n";
     report_file << "Number of processes in memory: " << process_count << "\n";
-    report_file << "Total external fragmentation in B: " << fragmentation_bytes << "\n";
-    report_file << g_memory_manager.generate_memory_snapshot(g_running_list.get_all());
+    report_file << "Total free memory: " << free_bytes << " B\n\n";
 
     report_file.close();
+}
+
+void display_vmstat() {
+    long long total_cpu_ticks = g_cpu_ticks_active.load() + g_cpu_ticks_idle.load();
+    
+    size_t total_mem_bytes = g_config.max_overall_mem;
+    size_t free_mem_bytes = g_memory_manager.get_free_memory_in_bytes();
+    size_t used_mem_bytes = total_mem_bytes - free_mem_bytes;
+
+    long long pages_in = g_page_ins.load();
+    long long pages_out = g_page_outs.load();
+
+    system("clear"); 
+    std::cout << "--- Virtual Memory Statistics ---\n\n";
+
+    std::cout << "-- Memory (Bytes) --\n";
+    std::cout << std::setw(12) << "Total: " << total_mem_bytes << "\n";
+    std::cout << std::setw(12) << "Used: " << used_mem_bytes << "\n";
+    std::cout << std::setw(12) << "Free: " << free_mem_bytes << "\n\n";
+
+    std::cout << "-- CPU Ticks --\n";
+    std::cout << std::setw(12) << "Active: " << g_cpu_ticks_active.load() << " (Executing Instructions)\n";
+    std::cout << std::setw(12) << "Idle: " << g_cpu_ticks_idle.load() << " (Cores free)\n";
+    std::cout << std::setw(12) << "Total: " << total_cpu_ticks << "\n\n";
+
+    std::cout << "-- Paging --\n";
+    std::cout << std::setw(12) << "Paged In: " << pages_in << " (From Backing Store)\n";
+    std::cout << std::setw(12) << "Paged Out: " << pages_out << " (Evicted to Backing Store)\n\n";
 }
 
 // CURRENTLY: working on flow
@@ -93,6 +119,64 @@ void generate_report()
     std::cout << "Report saved to csopesy-log.txt\n";
 }
 
+void display_process_smi()
+{
+    int busy_cores = 0;
+    auto running_processes = g_running_list.get_all();
+    for (const auto &p : running_processes)
+    {
+        if (p.status == RUNNING)
+            busy_cores++;
+    }
+    float cpu_utilization = (g_config.num_cpu > 0) ? (static_cast<float>(busy_cores) / g_config.num_cpu) * 100.0f : 0.0f;
+
+    size_t total_mem_bytes = g_config.max_overall_mem;
+    size_t free_mem_bytes = g_memory_manager.get_free_memory_in_bytes();
+    size_t used_mem_bytes = total_mem_bytes - free_mem_bytes;
+    float mem_utilization = (total_mem_bytes > 0) ? (static_cast<float>(used_mem_bytes) / total_mem_bytes) * 100.0f : 0.0f;
+
+    float used_mem_kib = static_cast<float>(used_mem_bytes) / 1024;
+    float total_mem_kib = static_cast<float>(total_mem_bytes) / 1024;
+
+    system("clear");
+
+    std::cout << "+------------------------------------------------------+\n";
+    std::cout << "| PROCESS-SMI v01.00      Driver Version: 01.00        |\n";
+    std::cout << "+-------------------------+----------------------------+\n";
+
+    std::cout << "| CPU-Util: " << std::fixed << std::setprecision(2) << std::setw(6) << cpu_utilization << "%"
+              << "       | Memory Usage: " << std::setw(7) << used_mem_kib << "KiB / "
+              << std::setw(7) << total_mem_kib << "KiB    |\n";
+
+    std::cout << "|                         | Memory-Util: " << std::setw(6) << mem_utilization << "%"
+              << "                      |\n";
+
+    std::cout << "+------------------------------------------------------+\n";
+    std::cout << "| Running processes and physical memory usage:         |\n";
+    std::cout << "+-------------------------+----------------------------+\n";
+    std::cout << "| PID      | Process Name   | Physical Memory (KiB)    |\n";
+    std::cout << "+----------+----------------+--------------------------+\n";
+
+    if (running_processes.empty())
+    {
+        std::cout << "| (No processes are currently running on a core)       |\n";
+    }
+    else
+    {
+        for (const auto &p : running_processes)
+        {
+            int frames_used = g_memory_manager.get_frame_count_for_process(p.pid);
+            size_t bytes_used = frames_used * g_config.mem_per_frame;
+            float kib_used = static_cast<float>(bytes_used) / 1024;
+
+            std::cout << "| " << std::left << std::setw(8) << p.pid
+                      << " | " << std::setw(14) << p.name
+                      << " | " << std::right << std::setw(21) << std::fixed << std::setprecision(2) << kib_used << " KiB |\n";
+        }
+    }
+    std::cout << "+----------+----------------+--------------------------+\n\n";
+}
+
 void memory_reporter_thread()
 {
     int last_tick = 0;
@@ -127,7 +211,7 @@ void process_generator_thread()
 
             // Increment the counter for the *next* process
             process_counter++;
-            
+
             std::this_thread::sleep_for(std::chrono::milliseconds(g_config.batch_process_freq));
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Check flag periodically
@@ -167,7 +251,7 @@ int main()
         exit(1);
     }
 
-    g_memory_manager.initialize(g_config.max_overall_mem);
+    g_memory_manager.initialize(g_config.max_overall_mem, g_config.mem_per_frame);
 
     std::unordered_map<std::string, std::function<void()>> screens; // changed this because Console is static
     std::vector<CPU_Core *> cpu_cores;
@@ -242,6 +326,8 @@ int main()
                 std::cout << "  scheduler-start - Start the scheduler." << std::endl;
                 std::cout << "  scheduler-stop - Stop the scheduler." << std::endl;
                 std::cout << "  report-util   - Generate utilization report." << std::endl;
+                std::cout << "  process-smi   - Prints summarized view of GPU and CPU usage." << std::endl;
+                std::cout << "  vmstat        - Provides a detailed view of the active/inactive processes, available/used memory, and pages." << std::endl;
                 std::cout << "  clear         - Clear the screen" << std::endl;
                 std::cout << "  exit          - Stops all threads and exits the application." << std::endl;
             }
@@ -290,8 +376,8 @@ int main()
                         for (const auto &p : running)
                         {
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
-                                    << "Core: " << p.assigned_core_id << "\t"
-                                    << p.commandCounter << " / " << p.totalCommands;
+                                      << "Core: " << p.assigned_core_id << "\t"
+                                      << p.commandCounter << " / " << p.totalCommands;
 
                             std::cout << "\n";
                         }
@@ -310,8 +396,8 @@ int main()
                         for (const auto &p : finished)
                         {
                             std::cout << "  " << p.name << "\t(" << p.creation_timestamp << ")\t"
-                                    << "Finished\t"
-                                    << p.commandCounter << " / " << p.totalCommands << "\n";
+                                      << "Finished\t"
+                                      << p.commandCounter << " / " << p.totalCommands << "\n";
                         }
                     }
                     std::cout << "--------------------------------------------------------\n\n";
@@ -359,6 +445,14 @@ int main()
             {
                 generate_report();
             }
+            else if (input == "process-smi")
+            {
+                display_process_smi();
+            }
+            else if (input == "vmstat") 
+            {
+                display_vmstat();
+            }
             else if (input == "test")
             {
                 g_generate_processes = true;
@@ -375,7 +469,7 @@ int main()
             {
                 std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
             }
-    } while (exit != 1);
+        } while (exit != 1);
     }
 
     if (exit != 9)

@@ -5,6 +5,7 @@
 #include <string>
 #include "Process.h"
 #include "Globals.h"
+#include <algorithm>
 
 class ProcessCollection
 {
@@ -23,6 +24,19 @@ public:
             }
         }
         processes.push_back(p);
+    }
+
+    void remove(int pid_to_remove)
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        auto it = std::remove_if(processes.begin(), processes.end(),
+                                 [pid_to_remove](const Process& p) {
+                                     return p.pid == pid_to_remove;
+                                 });
+
+        if (it != processes.end()) {
+            processes.erase(it, processes.end());
+        }
     }
 
     void clear() {

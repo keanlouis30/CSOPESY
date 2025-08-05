@@ -6,8 +6,10 @@
 #include <functional>
 
 Process::Process(std::string n, int p, const Config &config)
-    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1), memory_start_address(0), memory_size(0)
+    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1)
 {
+
+    initialize_virtual_memory(config.mem_per_proc, config.mem_per_frame);
 
     // Set creation timestamp
     time_t now = time(nullptr);
@@ -22,6 +24,12 @@ Process::Process(std::string n, int p, const Config &config)
     // Set quantum for RR
     quantum_max = config.quantum_cycles;
     quantum_remaining = quantum_max;
+}
+
+void Process::initialize_virtual_memory(size_t virtual_memory_size, size_t page_size)
+{
+    int num_pages = (virtual_memory_size + page_size - 1) / page_size;
+    page_table.resize(num_pages);
 }
 
 void Process::generate_instructions(const Config &config)

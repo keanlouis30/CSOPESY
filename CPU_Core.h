@@ -25,38 +25,7 @@ public:
     CPU_Core(int id, ProcessCollection &finished, std::atomic<bool> &shutdown)
         : core_id(id), current_process(nullptr), shutdown_signal(shutdown) {}
 
-    // In CPU_Core.h
-
-    void run()
-    {
-        while (!shutdown_signal)
-        {
-            std::shared_ptr<Process> p = nullptr;
-
-            {
-                std::lock_guard<std::mutex> lock(core_mtx);
-                p = current_process;
-            }
-
-            if (p)
-            {
-
-                if (p->commandCounter < p->totalCommands)
-                {
-                    
-                    execute_command(*p);
-                    p->commandCounter++;
-                    p->quantum_remaining--; 
-
-                    std::this_thread::sleep_for(std::chrono::milliseconds(g_config.delays_per_exec));
-                }
-            }
-            else
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-        }
-    }
+    void run(); 
 
     bool assign_process(Process proc)
     {
