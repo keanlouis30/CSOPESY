@@ -447,17 +447,25 @@ int main()
                         // Check instruction count
                         if (instructions.size() < 1 || instructions.size() > 50) {
                             std::cout << "Invalid instruction count. Must be between 1 and 50.\n";
-                        }
+                        } 
 
                         Process newProcess(processName, memorySize, process_id_counter++, g_config, false);
                         newProcess.commands = instructions;
+                        newProcess.totalCommands = instructions.size();  // <- Fix!
                         g_ready_queue.push(newProcess);
 
+                        std::cout << "Loaded instructions for " << processName << ":\n";
+                        for (const auto& instr : instructions) {
+                            std::cout << instr << std::endl;
+                        }
                         std::cout << "Created process \"" << processName << "\" with " << instructions.size() << " instructions.\n";
+                        std::cout << "[DEBUG] Commands size for process " << processName << ": " << newProcess.commands.size() << "\n";
 
-                        screens.emplace(processName, [=]() {
+
+                        screens.emplace(processName, [&]() {
                             Console::display(processName, g_ready_queue, g_running_list, g_finished_list);
                         });
+
 
                         screens[processName]();
                     }
@@ -475,7 +483,7 @@ int main()
                             << "  screen -ls                     : List processes\n"
                             << "  screen -s <name> <mem_size>    : Create process\n"
                             << "  screen -r <name>               : Resume process\n"
-                            << "  screen -c <name>               : Clear screen\n"
+                            << "  screen -c <name> <mem_size> "<<"<" << "Instructions" << ">" << ": Clear screen\n"
                             << "\033[0m\n";
                 }
             }

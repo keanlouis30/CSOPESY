@@ -34,108 +34,96 @@ void CPU_Core::execute_command(Process &p)
 
     std::ofstream outfile(p.name + "_log.txt", std::ios_base::app);
 
-auto resolve = [&](const std::string& tok,
-                   const std::unordered_map<std::string,uint16_t>& vars,
-                   bool& ok) -> uint16_t
-{
-    // Assume success until something goes wrong
-    ok = true;
+    auto resolve = [&](const std::string& tok,
+                       const std::unordered_map<std::string, uint16_t>& vars,
+                       bool& ok) -> uint16_t
+    {
+        // Assume success until something goes wrong
+        ok = true;
 
-    // 1. If it's a known variable, return its value
-    if (auto it = vars.find(tok); it != vars.end())
-        return it->second;
+        // 1. If it's a known variable, return its value
+        if (auto it = vars.find(tok); it != vars.end())
+            return it->second;
 
-    // 2. Otherwise try it as a literal number
-    try {
-        return static_cast<uint16_t>(std::stoi(tok));
-    }
-    catch (const std::exception&) {
-        ok = false;            // parsing failed
-        return 0;              
-    }
-};
+        // 2. Otherwise try it as a literal number
+        try {
+            return static_cast<uint16_t>(std::stoi(tok));
+        }
+        catch (const std::exception&) {
+            ok = false;  // parsing failed
+            return 0;
+        }
+    };
 
-
-    //std::cout <<  " \033[35m" << command << "\033[0m" << std::endl;
-  if (command == "DECLARE") {
+    if (command == "DECLARE") {
         // DECLARE variable_name value
         if (parts.size() == 3) {
             std::string var_name = parts[1];
 
-            // Check if symbol table (max 32 vars) is full
             if (p.variables.size() >= 32) {
                 outfile << "DECLARE failed: Symbol table full (max 32 variables)." << std::endl;
             }
-            // Check if variable already declared
             else if (p.variables.find(var_name) != p.variables.end()) {
                 outfile << "DECLARE ignored: Variable '" << var_name << "' already declared." << std::endl;
             }
-            // Otherwise declare it
             else {
                 p.variables[var_name] = p.next_offset;
                 outfile << "DECLARE: " << var_name 
                         << " assigned offset " << p.next_offset << std::endl;
                 p.next_offset++;
             }
-        }else if (command == "ADD" || command == "SUBTRACT"){
-            if (parts.size() == 3)
-            {
-                bool ok1, ok2;
-                uint16_t val1 = resolve(parts[1], p.variables, ok1);
-                uint16_t val2 = resolve(parts[2], p.variables, ok2);
+        }
+    } 
+    else if (command == "ADD" || command == "SUBTRACT") {
+        if (parts.size() == 3) {
+            bool ok1, ok2;
+            uint16_t val1 = resolve(parts[1], p.variables, ok1);
+            uint16_t val2 = resolve(parts[2], p.variables, ok2);
 
-                if (ok1 && ok2)            // both operands parsed successfully
-                {
-                    int result = (command == "ADD")
-                            ? int(val1) + int(val2)
-                            : int(val1) - int(val2);
+            if (ok1 && ok2) {
+                int result = (command == "ADD")
+                    ? int(val1) + int(val2)
+                    : int(val1) - int(val2);
 
-                    outfile << command << ": " << result
-                            << " = " << val1
-                            << (command == "ADD" ? " + " : " - ")
-                            << val2 << " (Result: " << result << ")\n";
-                }
-                else                       // at least one operand was invalid
-                {
-                    outfile << "Executing " << command
-                            << " command (raw): " << command_str << '\n';
-                }
+                outfile << command << ": " << result
+                        << " = " << val1
+                        << (command == "ADD" ? " + " : " - ")
+                        << val2 << " (Result: " << result << ")\n";
             }
-            else
-            {
+            else {
                 outfile << "Executing " << command
                         << " command (raw): " << command_str << '\n';
             }
-        }else if (command == "PRINT") {
-        // PRINT variable_name or "string literal"
+        }
+        else {
+            outfile << "Executing " << command
+                    << " command (raw): " << command_str << '\n';
+        }
+    } 
+    else if (command == "PRINT") {
         if (parts.size() > 1) {
             std::string output_target = parts[1];
             if (p.variables.count(output_target)) {
-                // If it's a variable, print its value
                 outfile << "Hello World from  " << p.name << " !" << std::endl;
             } else {
-                // If it's not a variable, assume it's a string literal and trim quotes
                 outfile << "Hello World from  " << p.name << " !" << std::endl;
             }
         } else {
-                outfile << "Hello World from  " << p.name << " !" << std::endl;
+            outfile << "Hello World from  " << p.name << " !" << std::endl;
         }
-    } else if (command == "SLEEP") {
-        // SLEEP cycles
+    } 
+    else if (command == "SLEEP") {
         if (parts.size() == 2) {
             int sleep_cycles = std::stoi(parts[1]);
-            // Simulate sleep by pausing the current thread.
-            // In a real OS, this would involve yielding to the scheduler.
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100)); // Placeholder delay
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100));
             outfile << "SLEEP: Process slept for " << sleep_cycles << " ticks." << std::endl;
         } else {
             outfile << "Executing SLEEP command: " << command_str << std::endl;
         }
-    } else {
-        // Log unknown commands
+    } 
+    else {
         outfile << "Executing Command: " << command_str << std::endl;
     }
 
-    // Close the log file.
     outfile.close();
 }

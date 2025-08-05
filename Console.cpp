@@ -29,7 +29,7 @@ void Console::display(const std::string& process_name, ReadyQueue& ready_queue, 
         SI.printMessage("\033[33mScreen: " + p.name + "\033[0m");
         SI.printMessage("\033[32mPID: " + std::to_string(p.pid) + "\033[0m");
         SI.printMessage("\033[32mStatus: " + statusToString(p.status) + "\033[0m");
-        SI.printMessage("\033[32mInstructions: " + std::to_string(p.commandCounter) + " / " + std::to_string(p.totalCommands) + "\033[0m");
+        SI.printMessage("\033[32mInstructions: " + std::to_string(p.commandCounter) + " / " + std::to_string(p.commands.size()) + "\033[0m");
         if (p.status == RUNNING) {
             SI.printMessage("\033[32mCore: " + std::to_string(p.assigned_core_id) + "\033[0m");
         }
