@@ -427,8 +427,64 @@ int main()
                 {
                     screenName = input.substr(10);
                     Console::display(screenName, g_ready_queue, g_running_list, g_finished_list);
-                }
-                else
+                }else if (input.rfind("screen -c ", 0) == 0)
+                {
+                    std::string command_args = input.substr(10);
+                    std::stringstream ss(command_args);
+                    std::string screenName;
+                    std::string instructions_str;
+                    int instruction_count;
+
+                    // Extract process name
+                    ss >> screenName;
+
+                    // Extract instruction count
+                    ss >> instruction_count;
+
+                    // The rest of the stream is the instructions string enclosed in quotes
+                    ss.ignore(); // Discard the space
+                    std::getline(ss, instructions_str);
+
+                    // Remove leading/trailing quotes from the instructions string
+                    if (instructions_str.front() == '"' && instructions_str.back() == '"') {
+                        instructions_str = instructions_str.substr(1, instructions_str.length() - 2);
+                    }
+                    
+                    // Split the instructions by the semicolon delimiter
+                    std::vector<std::string> user_commands;
+                    std::stringstream instructions_stream(instructions_str);
+                    std::string command;
+                    while (std::getline(instructions_stream, command, ';')) {
+                        command.erase(0, command.find_first_not_of(" \t\n\r\f\v"));
+                        command.erase(command.find_last_not_of(" \t\n\r\f\v") + 1);
+                        if (!command.empty()) {
+                            user_commands.push_back(command);
+                        }
+                    }
+                    
+                    // Validate the number of instructions
+                    if (user_commands.size() != instruction_count || user_commands.size() < 1 || user_commands.size() > 50) {
+                        std::cout << "\033[31mInvalid command: instruction count must match the provided number and be between 1 and 50.\033[0m" << std::endl;
+                        continue;
+                    }
+                    
+                    // Check if a process with this name already exists
+                    if (g_ready_queue.exists(screenName) || g_running_list.exists(screenName) || g_finished_list.exists(screenName))
+                    {
+                        std::cout << "\033[31mProcess or screen \"" << screenName << "\" already exists.\033[0m\n";
+                    }
+                    else
+                    {
+                        // Create the new process with user-defined commands
+                        Process new_process(screenName, process_id_counter++, g_config, user_commands);
+                        g_ready_queue.push(new_process);
+                        
+                        screens.emplace(screenName, [=]()
+                                        { Console::display(screenName, g_ready_queue, g_running_list, g_finished_list); });
+                        
+                        std::cout << "\033[32mProcess \"" << screenName << "\" created with custom instructions.\033[0m" << std::endl;
+                    }
+                }else
                 {
                     std::cout << "\033[31m" << "Enter 'screen -ls' to list processes, 'screen -s <name>' to create, or 'screen -r <name>' to resume." << "\033[0m" << std::endl;
                 }
@@ -463,82 +519,7 @@ int main()
                 g_generate_processes = false;
                 std::cout << "Automatic process generation stopped." << std::endl;
             }
-            else if (input.rfind("screen -c ", 0) == 0)
-            {
-                // Extract everything after "screen -c "
-                std::string command_args = input.substr(10);
-                
-                // Find the first double quote for the process name
-                size_t first_quote = command_args.find('"');
-                if (first_quote == std::string::npos) {
-                    std::cout << "\033[31mInvalid command format. Expected: screen -c \"<name>\" \"<instructions>\"\033[0m" << std::endl;
-                    continue;
-                }
-                
-                // Find the second double quote for the process name
-                size_t second_quote = command_args.find('"', first_quote + 1);
-                if (second_quote == std::string::npos) {
-                    std::cout << "\033[31mInvalid command format. Missing closing quote for process name.\033[0m" << std::endl;
-                    continue;
-                }
-                
-                // Extract the process name
-                screenName = command_args.substr(first_quote + 1, second_quote - first_quote - 1);
-                
-                // Find the third double quote for the instructions string
-                size_t third_quote = command_args.find('"', second_quote + 1);
-                if (third_quote == std::string::npos) {
-                    std::cout << "\033[31mInvalid command format. Missing instructions string.\033[0m" << std::endl;
-                    continue;
-                }
-                
-                // Find the fourth double quote for the instructions string
-                size_t fourth_quote = command_args.find('"', third_quote + 1);
-                if (fourth_quote == std::string::npos) {
-                    std::cout << "\033[31mInvalid command format. Missing closing quote for instructions.\033[0m" << std::endl;
-                    continue;
-                }
-                
-                // Extract the instructions string
-                std::string instructions_str = command_args.substr(third_quote + 1, fourth_quote - third_quote - 1);
-                
-                // Split the instructions by the semicolon delimiter
-                std::vector<std::string> user_commands;
-                std::stringstream ss(instructions_str);
-                std::string command;
-                while (std::getline(ss, command, ';')) {
-                    // Trim leading/trailing whitespace
-                    command.erase(0, command.find_first_not_of(" \t\n\r\f\v"));
-                    command.erase(command.find_last_not_of(" \t\n\r\f\v") + 1);
-                    if (!command.empty()) {
-                        user_commands.push_back(command);
-                    }
-                }
-                
-                // Validate the number of instructions
-                if (user_commands.size() < 1 || user_commands.size() > 50) {
-                    std::cout << "\033[31mInvalid command: instruction count must be between 1 and 50.\033[0m" << std::endl;
-                    continue;
-                }
-                
-                // Check if a process with this name already exists
-                if (g_ready_queue.exists(screenName) || g_running_list.exists(screenName) || g_finished_list.exists(screenName))
-                {
-                    std::cout << "\033[31mProcess or screen \"" << screenName << "\" already exists.\033[0m\n";
-                }
-                else
-                {
-                    // Create the new process with user-defined commands
-                    Process new_process(screenName, process_id_counter++, g_config, user_commands);
-                    g_ready_queue.push(new_process);
-                    
-                    screens.emplace(screenName, [=]()
-                                    { Console::display(screenName, g_ready_queue, g_running_list, g_finished_list); });
-                    
-                    std::cout << "\033[32mProcess \"" << screenName << "\" created with custom instructions.\033[0m" << std::endl;
-                }
-            }
-                else if (input == "exit")
+            else if (input == "exit")
                 {
                     exit = 1;
                 }
