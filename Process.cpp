@@ -15,10 +15,13 @@ Process::Process(std::string n, size_t mem_size, int p, const Config &config, bo
     std::unordered_map<std::string, uint16_t> variable_table;
     uint16_t next_offset = 0;
 
+
     if (!power(mem_size)) {
         std::cerr << "invalid memory allocation" << std::endl;
         throw std::invalid_argument("invalid memory allocation");
     }
+
+    this->mem_size = mem_size; // ??
 
     // Set creation timestamp
     time_t now = time(nullptr);

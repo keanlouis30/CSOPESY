@@ -29,7 +29,7 @@ public:
     int quantum_max;
     int commandCounter;
     // size_t memory_start_address;
-    // size_t memory_size;
+    size_t mem_size;
 
     std::vector<PageTableEntry> page_table;
 
