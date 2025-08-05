@@ -4,5 +4,7 @@ enum Instructions {
     ADD,      
     SUBTRACT, 
     SLEEP,    
-    FOR  
+    FOR,
+    READ,
+    WRITE
 };

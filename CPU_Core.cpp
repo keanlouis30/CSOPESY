@@ -172,7 +172,21 @@ void CPU_Core::execute_command(Process &p)
                 outfile << "Executing SLEEP command: " << command_str << std::endl;
             }
         } 
-        else {
+        else if (command == "READ") {
+            if (parts.size() == 2) {
+                outfile << "READ: " << parts[1] << std::endl;
+            } else {
+                outfile << "Executing READ command: " << command_str << std::endl;
+            }
+        } 
+        else if (command == "WRITE") {
+            if (parts.size() == 2) {
+                outfile << "WRITE: " << parts[1]  << std::endl;
+            } else {
+                outfile << "Executing WRITE command: " << command_str << std::endl;
+            }
+        } 
+        else  {
             outfile << "Executing Command: " << command_str << std::endl;
         }
 
