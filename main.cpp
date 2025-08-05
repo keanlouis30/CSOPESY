@@ -5,6 +5,8 @@
 #include <string>
 #include <functional>
 #include <random>
+#include <sstream>
+#include <vector>
 
 Config g_config;
 ReadyQueue g_ready_queue;
@@ -608,15 +610,15 @@ int main()
                 std::cout << "Automatic process generation stopped." << std::endl;
             }
             else if (input == "exit")
-            {
-                exit = 1;
-            }
-            else
-            {
-                std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
-            }
-        } while (exit != 1);
-    }
+                {
+                    exit = 1;
+                }
+                else
+                {
+                    std::cout << "\033[31m" << "Command not recognized. Type [help] for available commands." << "\033[0m" << std::endl;
+                }
+            } while (exit != 1);
+        }
 
     if (exit != 9)
     {

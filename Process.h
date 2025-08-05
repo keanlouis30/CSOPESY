@@ -34,8 +34,9 @@ public:
     std::vector<PageTableEntry> page_table;
 
     Process(std::string n, size_t mem_size, int p, const Config& config, bool generate_inst); 
-    
-    Process(std::string n, size_t mem_size, int p, const Config& config, bool generate_inst); 
+        
+    // Process(std::string n, int p, const Config& config, const std::vector<std::string>& user_commands); 
+    // Process(std::string n, int p, const Config& config); 
 
     void initialize_virtual_memory(size_t virtual_memory_size, size_t page_size);
 

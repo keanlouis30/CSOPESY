@@ -25,6 +25,22 @@ void Console::display(const std::string& process_name, ReadyQueue& ready_queue, 
             break;
         }
 
+       if (!found) {
+    SI.printMessage("\033[31mProcess '" + process_name + "' not found.\033[0m");
+    SI.printBorder("bottom");
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    break;
+}
+
+        // Check for the new MEMORY_ERROR status
+        if (p.status == MEMORY_ERROR) {
+            std::cout << "\033[31mProcess " << p.name << " shut down due to memory access violation error that occurred at " << p.assigned_core_id << "\033[0m" << std::endl;
+            // You might also want to display the error message itself
+            SI.printBorder("bottom");
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            break;
+        }
+        
         // Display process info (process-smi)
         SI.printMessage("\033[33mScreen: " + p.name + "\033[0m");
         SI.printMessage("\033[32mPID: " + std::to_string(p.pid) + "\033[0m");

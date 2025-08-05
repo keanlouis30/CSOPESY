@@ -110,6 +110,41 @@ void CPU_Core::execute_command(Process &p)
             } else {
                 outfile << "Hello World from  " << p.name << " !" << std::endl;
             }
+        } 
+        else if (command == "SLEEP") {
+            if (parts.size() == 2) {
+                int sleep_cycles = std::stoi(parts[1]);
+                std::this_thread::sleep_for(std::chrono::milliseconds(sleep_cycles * 100));
+                outfile << "SLEEP: Process slept for " << sleep_cycles << " ticks." << std::endl;
+            } else {
+                outfile << "Executing SLEEP command: " << command_str << std::endl;
+            }
+        } 
+        else if (command == "READ") {
+            if (parts.size() == 2) {
+                outfile << "READ: " << parts[1] << std::endl;
+            } else {
+                outfile << "Executing READ command: " << command_str << std::endl;
+            }
+        } 
+        else if (command == "WRITE") {
+            if (parts.size() == 2) {
+                outfile << "WRITE: " << parts[1]  << std::endl;
+            } else {
+                outfile << "Executing WRITE command: " << command_str << std::endl;
+            }
+        } 
+        else  {
+            outfile << "Executing Command: " << command_str << std::endl;
+        }
+
+        outfile.close();
+
+        // page fault retry logic
+
+        if (page_fault_occurred) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(5)); 
+            continue; 
         } else {
             outfile << "Hello World from  " << p.name << " !" << std::endl;
         }

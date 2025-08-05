@@ -6,7 +6,8 @@ enum Status
     READY,
     RUNNING,
     BLOCKED,
-    FINISHED
+    FINISHED,
+    MEMORY_ERROR
 };
 
 inline std::string statusToString(Status status) {
@@ -15,6 +16,7 @@ inline std::string statusToString(Status status) {
         case RUNNING: return "Running";
         case BLOCKED: return "Blocked (I/O)"; 
         case FINISHED: return "Finished";
+        case MEMORY_ERROR: return "Memory Error";
         default: return "Unknown";
     }
 }
