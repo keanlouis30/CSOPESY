@@ -195,7 +195,7 @@ private:
                     p->status = FINISHED;
                     g_finished_list.add(*p);
 
-                    g_memory_manager.deallocate_all_frames_for_process(p->pid);
+                    g_memory_manager.remove_process_memory_layout(p->pid);
 
                     core->release_process();
                 }

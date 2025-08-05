@@ -10,7 +10,7 @@ static bool power(size_t x) {
 }
 
 Process::Process(std::string n, size_t mem_size, int p, const Config &config, bool generate_inst)
-    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1), memory_start_address(0), memory_size(mem_size)
+    : name(std::move(n)), pid(p), status(READY), commandCounter(0), assigned_core_id(-1)
 {
     std::unordered_map<std::string, uint16_t> variable_table;
     uint16_t next_offset = 0;

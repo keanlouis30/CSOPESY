@@ -2,6 +2,8 @@
 #include <queue>
 #include <mutex>
 #include <string>
+#include <thread>
+#include <chrono>
 #include "Process.h"
 #include "Globals.h"
 

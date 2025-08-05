@@ -150,6 +150,12 @@ public:
     size_t calculate_external_fragmentation();
     int get_process_count_in_memory();
     
+    // Additional methods for compatibility
+    int get_active_process_count() { return get_process_count_in_memory(); }
+    size_t get_free_memory_in_bytes() { return get_free_frames() * frame_size; }
+    int get_frame_count_for_process(int process_id);
+    void handle_page_fault(Process& process, int page_num);
+    
     // Memory visualization
     std::string generate_memory_snapshot(const std::vector<Process>& running_processes);
     std::string generate_vmstat_report();

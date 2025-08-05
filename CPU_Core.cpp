@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 extern MemoryManager g_memory_manager;
 
@@ -44,7 +46,8 @@ void CPU_Core::execute_command(Process &p)
         ok = true;
 
         // 1. If it's a known variable, return its value
-        if (auto it = vars.find(tok); it != vars.end())
+        auto it = vars.find(tok);
+        if (it != vars.end())
             return it->second;
 
         // 2. Otherwise try it as a literal number
@@ -139,15 +142,6 @@ void CPU_Core::execute_command(Process &p)
         }
 
         outfile.close();
-
-        // page fault retry logic
-
-        if (page_fault_occurred) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(5)); 
-            continue; 
-        } else {
-            outfile << "Hello World from  " << p.name << " !" << std::endl;
-        }
     } 
     else if (command == "SLEEP") {
         if (parts.size() == 2) {

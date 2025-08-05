@@ -688,8 +688,7 @@ bool MemoryManager::allocate(Process& process, size_t required_size) {
             block.process_id = process.pid;
             block.process_name = process.name;
             
-            process.memory_start_address = block.start_address;
-            process.memory_size = required_size;
+            process.mem_size = required_size;
             
             if (original_block_size > required_size) {
                 size_t remaining_size = original_block_size - required_size;
@@ -728,9 +727,6 @@ void MemoryManager::deallocate(int process_id) {
             return;
         }
     }
-
-    int frame_num = process.page_table[page_num].frame_number;
-    return (frame_num * page_size) + offset;
 }
 
 void MemoryManager::merge_free_blocks() {
@@ -793,33 +789,10 @@ std::string MemoryManager::generate_memory_snapshot(const std::vector<Process>& 
         }
     }
     
-    // Now we have a frame, load the required page into it.
-    load_page_into_frame(process, virtual_page_num, frame_to_use);
-}
-
-int MemoryManager::find_free_frame() {
-    for (int i = 0; i < physical_frames.size(); ++i) {
-        if (physical_frames[i].is_free) {
-            return i;
-        }
-    }
-    return -1; // No free frames
-}
-
-int MemoryManager::run_fifo_replacement() {
-    int victim_frame_num = fifo_queue.front();
-    fifo_queue.pop_front();
-
-    // evict_page_from_frame(victim_frame_num);
-
-    return victim_frame_num;
-}
-
-void MemoryManager::load_page_into_frame(Process& process, int virtual_page_num, int frame_num) {
-    char* destination = &main_memory[frame_num * page_size];
-    
     return ss.str();
 }
+
+
 
 std::string MemoryManager::generate_page_table_report(int process_id) {
     std::stringstream report;
@@ -871,6 +844,54 @@ std::string MemoryManager::generate_page_table_report(int process_id) {
     
     report << "================================\n";
     return report.str();
+}
+
+// ============================================================================
+// ADDITIONAL COMPATIBILITY METHODS
+// ============================================================================
+
+int MemoryManager::get_frame_count_for_process(int process_id) {
+    std::lock_guard<std::mutex> lock(mtx);
+    
+    int frame_count = 0;
+    
+    // Count frames in instruction page table
+    auto inst_it = instruction_page_tables.find(process_id);
+    if (inst_it != instruction_page_tables.end()) {
+        for (const auto& pte : inst_it->second) {
+            if (pte.valid && pte.frame_number >= 0) {
+                frame_count++;
+            }
+        }
+    }
+    
+    // Count frames in variable page table
+    auto var_it = variable_page_tables.find(process_id);
+    if (var_it != variable_page_tables.end()) {
+        for (const auto& pte : var_it->second) {
+            if (pte.valid && pte.frame_number >= 0) {
+                frame_count++;
+            }
+        }
+    }
+    
+    return frame_count;
+}
+
+void MemoryManager::handle_page_fault(Process& process, int page_num) {
+    std::lock_guard<std::mutex> lock(mtx);
+    
+    // This is a simplified page fault handler
+    // In a real system, this would be more complex
+    std::cout << "[MemoryManager] Handling page fault for process " << process.pid 
+              << " at page " << page_num << std::endl;
+    
+    // For now, just mark that the page fault has been handled
+    process.has_page_fault = false;
+    process.faulting_page_num = -1;
+    
+    // The actual page loading will be handled by the access methods
+    // when the process tries to access the page again
 }
 
 // ============================================================================

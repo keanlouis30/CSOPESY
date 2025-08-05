@@ -7,6 +7,7 @@
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <iostream>
 #include "Config.h"
 #include "Status.h"
 #include "Globals.h"

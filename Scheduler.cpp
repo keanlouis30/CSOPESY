@@ -1,6 +1,9 @@
 #include "Scheduler.h"
 #include "ReadyQueue.h"
 #include "Globals.h"
+#include <thread>
+#include <chrono>
+#include <iostream>
 
 // The constructor stays the same
 Scheduler::Scheduler(ReadyQueue &ready,
