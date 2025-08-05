@@ -158,3 +158,39 @@ void CPU_Core::execute_command(Process &p)
 
     outfile.close();
 }
+
+void CPU_Core::run()
+{
+    using namespace std::chrono_literals;
+    
+    while (!shutdown_signal.load(std::memory_order_acquire))
+    {
+        std::lock_guard<std::mutex> lock(core_mtx);
+        
+        if (current_process && current_process->status == RUNNING)
+        {
+            // Check for page fault
+            if (current_process->has_page_fault)
+            {
+                // Handle page fault
+                g_memory_manager.handle_page_fault(*current_process, current_process->faulting_page_num);
+                current_process->has_page_fault = false;
+            }
+            else
+            {
+                // Execute next command
+                execute_command(*current_process);
+                current_process->commandCounter++;
+                
+                // Check if process is finished
+                if (current_process->commandCounter >= current_process->totalCommands)
+                {
+                    current_process->status = FINISHED;
+                    current_process.reset();
+                }
+            }
+        }
+        
+        std::this_thread::sleep_for(1ms);
+    }
+}

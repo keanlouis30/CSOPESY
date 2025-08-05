@@ -4,7 +4,6 @@
 #include <atomic>
 #include "Process.h"
 #include <mutex>
-#include <shared_mutex>
 #include <memory>
 #include <thread>
 #include <chrono>
@@ -21,7 +20,7 @@ private:
     std::atomic<bool> &shutdown_signal;
 
 public:
-    mutable std::shared_mutex core_mtx;
+    mutable std::mutex core_mtx;
     std::shared_ptr<Process> current_process;
 
     CPU_Core(int id, ProcessCollection &finished, std::atomic<bool> &shutdown)
@@ -31,7 +30,7 @@ public:
 
     bool assign_process(Process proc)
     {
-        std::unique_lock<std::shared_mutex> lock(core_mtx);
+        std::lock_guard<std::mutex> lock(core_mtx);
         if (!current_process)
         {
             current_process = std::make_shared<Process>(std::move(proc));
@@ -43,7 +42,7 @@ public:
 
     bool is_idle() const
     {
-        std::shared_lock<std::shared_mutex> lock(core_mtx);
+        std::lock_guard<std::mutex> lock(core_mtx);
         return !current_process;
     }
 
@@ -54,19 +53,19 @@ public:
 
     std::shared_ptr<Process> get_process() const
     {
-        std::shared_lock<std::shared_mutex> lock(core_mtx);
+        std::lock_guard<std::mutex> lock(core_mtx);
         return current_process;
     }
 
     void release_process()
     {
-        std::unique_lock<std::shared_mutex> lock(core_mtx);
+        std::lock_guard<std::mutex> lock(core_mtx);
         current_process.reset();
     }
 
     std::optional<Process> steal_process()
     {
-        std::unique_lock<std::shared_mutex> lock(core_mtx);
+        std::lock_guard<std::mutex> lock(core_mtx);
         if (!current_process) {
             return std::nullopt;
         }

@@ -8,7 +8,7 @@
 // The constructor stays the same
 Scheduler::Scheduler(ReadyQueue &ready,
                      ProcessCollection &running,
-                     std::vector<CPU_Core *> &cores,
+                     std::vector<std::unique_ptr<CPU_Core>> &cores,
                      std::atomic<bool> &shutdown)
     : ready_queue(ready), running_list(running), cpu_cores(cores), shutdown_signal(shutdown)
 {

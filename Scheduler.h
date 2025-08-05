@@ -3,7 +3,6 @@
 #include <vector>
 #include <atomic>
 #include <mutex>
-#include <shared_mutex>
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -32,11 +31,11 @@ private:
     ProcessCollection &finished_list;
     std::vector<std::unique_ptr<CPU_Core>> &cpu_cores;
     std::atomic<bool> &shutdown_signal;
-    std::shared_mutex scheduler_mutex;
+    std::mutex scheduler_mutex;
 
     void handleFinishedProcesses()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         
         for (const auto &core : cpu_cores)
         {
@@ -55,7 +54,7 @@ private:
 
     void assignProcessesToIdleCores()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         
         if (ready_queue.isEmpty()) return;
         
@@ -74,7 +73,7 @@ private:
 
     void updateRunningList()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         std::lock_guard<std::mutex> lock(running_list.mtx);
         
         running_list.processes.clear();
@@ -130,11 +129,11 @@ private:
     std::vector<std::unique_ptr<CPU_Core>> &cpu_cores;
     Config &config;
     std::atomic<bool> &shutdown_signal;
-    std::shared_mutex scheduler_mutex;
+    std::mutex scheduler_mutex;
 
     void handleFinishedOrQuantumExpired()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         
         for (const auto &core : cpu_cores)
         {
@@ -182,7 +181,7 @@ private:
 
     void assignProcessesToIdleCores()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         
         if (ready_queue.isEmpty()) return;
         
@@ -203,7 +202,7 @@ private:
 
     void updateRunningList()
     {
-        std::shared_lock read_lock(scheduler_mutex);
+        std::lock_guard<std::mutex> read_lock(scheduler_mutex);
         std::lock_guard<std::mutex> lock(running_list.mtx);
         
         running_list.processes.clear();

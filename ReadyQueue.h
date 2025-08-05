@@ -13,17 +13,17 @@ class ReadyQueue
 {
 public:
     std::queue<Process> processes;
-    mutable std::shared_mutex mtx;
+    mutable std::mutex mtx;
 
     void push(Process p)
     {
-        std::unique_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         processes.push(std::move(p));
     }
 
     bool pop(Process &p)
     {
-        std::unique_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         if (processes.empty())
         {
             return false;
@@ -35,7 +35,7 @@ public:
 
     std::optional<Process> try_pop()
     {
-        std::unique_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         if (processes.empty())
         {
             return std::nullopt;
@@ -47,18 +47,18 @@ public:
 
     bool isEmpty() const
     {
-        std::shared_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         return processes.empty();
     }
 
     size_t size() const
     {
-        std::shared_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         return processes.size();
     }
 
     bool exists(const std::string& name) const {
-        std::shared_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         std::queue<Process> temp = processes;
         while(!temp.empty()){
             if(temp.front().name == name){
@@ -70,7 +70,7 @@ public:
     }
 
     std::optional<Process> find(const std::string& name) const {
-        std::shared_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         std::queue<Process> temp = processes;
         while(!temp.empty()){
             if(temp.front().name == name){
@@ -82,7 +82,7 @@ public:
     }
 
     bool find(const std::string& name, Process& out_process) const {
-        std::shared_lock<std::shared_mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx);
         std::queue<Process> temp = processes;
         while(!temp.empty()){
             if(temp.front().name == name){
