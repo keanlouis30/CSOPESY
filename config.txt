@@ -1,10 +1,11 @@
-2
-rr
-4
-1
-100
-100
-10 
-16384
-16
-4096
+num-cpu 8                    # Number of CPU cores
+scheduler "rr"               # Round-robin scheduling
+quantum-cycles 4             # Time quantum for RR
+batch-process-freq 1         # Dummy process generation frequency
+min-ins 1000                # Minimum instructions per process
+max-ins 2000                # Maximum instructions per process
+delays-per-exec 0           # Execution delays
+max-overall-mem 32768       # Total system memory (bytes)
+mem-per-frame 256           # Page size (bytes)
+min-mem-per-proc 64         # Minimum process memory
+max-mem-per-proc 64         # Maximum process memory

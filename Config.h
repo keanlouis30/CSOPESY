@@ -2,52 +2,70 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <unordered_map>
 
-class Config
-{
+enum class SchedulerType {
+    FCFS,
+    RR
+};
+
+class Config {
+private:
+    // Singleton instance
+    static std::unique_ptr<Config> instance;
+    
+    // Configuration parameters
+    uint8_t numCPUs = 4;
+    SchedulerType scheduler = SchedulerType::RR;
+    uint32_t quantumCycles = 5;
+    uint32_t batchProcessFreq = 1;
+    uint32_t minIns = 1000;
+    uint32_t maxIns = 2000;
+    uint32_t delayPerExec = 1;
+    uint32_t maxOverallMem = 32768;  // 32KB default
+    uint32_t memPerFrame = 256;      // 256 bytes per frame
+    uint32_t minMemPerProc = 64;     // 64 bytes minimum
+    uint32_t maxMemPerProc = 64;     // 64 bytes maximum
+    
+    // Private constructor for singleton
+    Config() = default;
+    
+    // Parameter validation
+    bool validateParameters() const;
+    bool isPowerOfTwo(uint32_t value) const;
+
 public:
-	int num_cpu;
-	std::string scheduler;
-	int quantum_cycles;
-	int batch_process_freq;
-	int min_ins;
-	int max_ins;
-	int delays_per_exec;
-	int max_overall_mem;
-	int mem_per_frame;
-	int mem_per_proc;
-
-	Config() : num_cpu(1), scheduler("fcfs"), quantum_cycles(1), batch_process_freq(1), min_ins(1), max_ins(1), delays_per_exec(0), max_overall_mem(16384), mem_per_frame(16), mem_per_proc(4096) {}
-
-	bool loadFromFile(const std::string &filename)
-	{
-		std::ifstream file(filename);
-
-		if (!file.is_open())
-		{
-			std::cout << "Error: Could not open " << filename << std::endl;
-			return false;
-		}
-
-		file >> num_cpu;
-		file >> scheduler;
-		file >> quantum_cycles;
-		file >> batch_process_freq;
-		file >> min_ins;
-		file >> max_ins;
-		file >> delays_per_exec;
-		file >> max_overall_mem;
-		file >> mem_per_frame;
-		file >> mem_per_proc;
-
-		if (file.fail())
-		{
-			std::cout << "Error: Invalid format in config file" << std::endl;
-			file.close();
-			return false;
-		}
-
-		file.close();
-		return true;
-	}
+    Config() = default;
+    // Singleton access
+    static Config& getInstance();
+    
+    // Prevent copying
+    Config(const Config&) = delete;
+    Config& operator=(const Config&) = delete;
+    
+    // Configuration loading
+    bool loadFromFile(const std::string& filename);
+    bool loadFromString(const std::string& configStr);
+    
+    // Getters
+    uint8_t getNumCPUs() const { return numCPUs; }
+    SchedulerType getScheduler() const { return scheduler; }
+    uint32_t getQuantumCycles() const { return quantumCycles; }
+    uint32_t getBatchProcessFreq() const { return batchProcessFreq; }
+    uint32_t getMinIns() const { return minIns; }
+    uint32_t getMaxIns() const { return maxIns; }
+    uint32_t getDelayPerExec() const { return delayPerExec; }
+    uint32_t getMaxOverallMem() const { return maxOverallMem; }
+    uint32_t getMemPerFrame() const { return memPerFrame; }
+    uint32_t getMinMemPerProc() const { return minMemPerProc; }
+    uint32_t getMaxMemPerProc() const { return maxMemPerProc; }
+    
+    // Utility methods
+    std::string getSchedulerString() const;
+    uint32_t getTotalFrames() const { return maxOverallMem / memPerFrame; }
+    bool validateMemorySize(uint32_t memSize) const;
+    
+    // Display configuration
+    void printConfiguration() const;
 };
