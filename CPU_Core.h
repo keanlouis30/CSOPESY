@@ -45,9 +45,9 @@ public:
                     
                     execute_command(*p);
                     p->commandCounter++;
-                    p->quantum_remaining--; 
+                    p->quantumRemaining--; 
 
-                    std::this_thread::sleep_for(std::chrono::milliseconds(g_config.delays_per_exec));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(g_config.getDelayPerExec()));
                 }
             }
             else

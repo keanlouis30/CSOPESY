@@ -1,5 +1,9 @@
 #pragma once
-// #include "Main.h"
+
+#include <iostream>   
+#include <string>     
+#include <regex>      
+
 
 class ScreenInterface
 {

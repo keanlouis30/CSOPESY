@@ -91,7 +91,6 @@ public:
     
     // State management
     void setStatus(ProcessStatus newStatus);
-    ProcessStatus getStatus() const { return status; }
     bool isReady() const { return status == ProcessStatus::READY; }
     bool isRunning() const { return status == ProcessStatus::RUNNING; }
     bool isWaiting() const { return status == ProcessStatus::WAITING; }
@@ -141,6 +140,8 @@ public:
     void setMemoryStartAddress(size_t address);
     void setMemorySize(size_t size);
     ProcessStatus getStatus() const;
+    std::shared_ptr<Instruction> getCurrentInstruction() const;
+
     
 private:
     // Configuration reference

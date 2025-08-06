@@ -13,7 +13,7 @@ Scheduler::Scheduler(ReadyQueue &ready,
 
 void Scheduler::run()
 {
-    if (g_config.scheduler == "rr")
+    if (g_config.getScheduler() == SchedulerType::RR)
     {
         RoundRobinScheduler rr_sched(g_ready_queue, g_running_list, g_finished_list, cpu_cores, g_config, shutdown_signal);
         rr_sched.run(); // This handles its own loop until shutdown_signal is true

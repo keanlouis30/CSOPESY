@@ -35,7 +35,7 @@ private:
                 // std::cout << "Core " << core->get_id()
                 //           << " finished process: " << core->current_process->name << std::endl;
 
-                core->current_process->status = FINISHED;
+                core->current_process->status == ProcessStatus::DONE;
                 g_finished_list.add(*core->current_process);
                 core->current_process = nullptr;
             }
@@ -56,7 +56,7 @@ private:
                     Process next_process;
                     if (ready_queue.pop(next_process))
                     {
-                        next_process.assigned_core_id = core->get_id();
+                        next_process.assignedCoreId = core->get_id();
                         core->assign_process(next_process);
                     }
                 }
@@ -78,7 +78,7 @@ private:
 
         // Get data
         int process_count = g_memory_manager.get_process_count_in_memory();
-        size_t fragmentation_bytes = g_memory_manager.calculate_external_fragmentation();
+        size_t fragmentation_bytes = g_memory_manager.calculateExternalFragmentation();
         size_t fragmentation_kb = fragmentation_bytes / 1024;
 
         // Write to file
@@ -176,7 +176,7 @@ private:
                 // Case 1: Process finished its work completely.
                 if (p->commandCounter >= p->totalCommands)
                 {
-                    p->status = FINISHED;
+                    p->status == ProcessStatus::DONE;
                     g_finished_list.add(*p);
                     g_memory_manager.deallocate(p->pid);
 
@@ -184,11 +184,11 @@ private:
                     core->release_process();
                 }
                 // Case 2: Process ran out of its time slice (quantum).
-                else if (p->quantum_remaining <= 0)
+                else if (p->quantumRemaining <= 0)
                 {
                     Process preempted_process = *p;
-                    preempted_process.status = READY;
-                    preempted_process.assigned_core_id = -1;
+                    preempted_process.status == ProcessStatus::READY;
+                    preempted_process.assignedCoreId = -1;
 
                     // Put it back in the ready queue to run again later
                     ready_queue.push(preempted_process);
@@ -216,20 +216,20 @@ private:
 
                         // If a process is returning to the ready queue, it already has memory.
                         // A simple check is to see if its memory address is non-zero.
-                        bool has_memory = (next_process.memory_size > 0);
+                        bool has_memory = (next_process.memorySize > 0);
 
                         if (!has_memory)
                         {
                             // This is a new process, try to allocate memory for it.
-                            has_memory = g_memory_manager.allocate(next_process, g_config.mem_per_proc);
+                            has_memory = g_memory_manager.allocate(next_process, g_config.minMemPerProc);
                         }
 
                         if (has_memory)
                         {
                             // ALLOCATION SUCCEEDED (or it already had memory)
-                            next_process.quantum_max = config.quantum_cycles;
-                            next_process.quantum_remaining = config.quantum_cycles;
-                            next_process.assigned_core_id = core->get_id();
+                            next_process.quantumMax = config.getQuantumCycles();
+                            next_process.quantumRemaining = config.getQuantumCycles();
+                            next_process.assignedCoreId = core->get_id();
                             core->assign_process(next_process);
                         }
                         else

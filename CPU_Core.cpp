@@ -26,9 +26,9 @@ std::string trim_quotes(const std::string& str) {
 
 void CPU_Core::execute_command(Process &p)
 {
-    if (p.commandCounter >= p.commands.size()) return;
+    if (p.commandCounter >= p.instructions.size()) return;
 
-    std::string command_str = p.commands[p.commandCounter];
+    std::string command_str = p.getCurrentInstruction()->serialize();
     std::vector<std::string> parts = split(command_str, ' ');
     std::string command = parts[0];
 

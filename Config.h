@@ -22,14 +22,8 @@ private:
     uint32_t batchProcessFreq = 1;
     uint32_t minIns = 1000;
     uint32_t maxIns = 2000;
-    uint32_t delayPerExec = 1;
     uint32_t maxOverallMem = 32768;  // 32KB default
     uint32_t memPerFrame = 256;      // 256 bytes per frame
-    uint32_t minMemPerProc = 64;     // 64 bytes minimum
-    uint32_t maxMemPerProc = 64;     // 64 bytes maximum
-    
-    // Private constructor for singleton
-    Config() = default;
     
     // Parameter validation
     bool validateParameters() const;
@@ -39,6 +33,9 @@ public:
     Config() = default;
     // Singleton access
     static Config& getInstance();
+    uint32_t delayPerExec = 1;
+    uint32_t minMemPerProc = 64;     // 64 bytes minimum
+    uint32_t maxMemPerProc = 64;     // 64 bytes maximum
     
     // Prevent copying
     Config(const Config&) = delete;
@@ -64,7 +61,6 @@ public:
     // Utility methods
     std::string getSchedulerString() const;
     uint32_t getTotalFrames() const { return maxOverallMem / memPerFrame; }
-    uint32_t getDelayPerExec() const;
     bool validateMemorySize(uint32_t memSize) const;
     
     // Display configuration
