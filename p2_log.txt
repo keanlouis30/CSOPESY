@@ -1,0 +1,17 @@
+SLEEP: Process slept for 138 ticks.
+Executing Command: FOR 2 { ... }
+ADD: 933 = 715 + 218 (Result: 933)
+Executing Command: READ var_2 0x1
+Hello World from  p2 !
+Executing Command: FOR 2 { ... }
+Executing Command: WRITE 0x2 67ea
+ADD: 1577 = 642 + 935 (Result: 1577)
+Executing Command: READ var_5 0x5
+SLEEP: Process slept for 132 ticks.
+ADD: 1422 = 916 + 506 (Result: 1422)
+SLEEP: Process slept for 49 ticks.
+DECLARE failed: Symbol table full (max 32 variables).
+Hello World from  p2 !
+Hello World from  p2 !
+SLEEP: Process slept for 128 ticks.
+SUBTRACT: 89 = 345 - 256 (Result: 89)

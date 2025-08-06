@@ -145,6 +145,8 @@ public:
     void displaySystemStatus() const;
     void displayMemoryStatus() const;
     void displaySchedulerStatus() const;
+    void display(const std::string& process_name, ReadyQueue& ready_queue,
+             ProcessCollection& running_list, ProcessCollection& finished_list);
     
     // Utility methods
     bool isProcessExists(const std::string& processName) const;

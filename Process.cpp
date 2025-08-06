@@ -73,6 +73,21 @@ Process::Process(const Process& other)
       commandCounter(other.commandCounter), totalCommands(other.totalCommands) {
 }
 
+Process::Process()
+    : name(""), pid(0), status(ProcessStatus::READY), 
+      memoryManager(nullptr), currentInstructionIndex(0), totalInstructions(0),
+      assignedCoreId(-1), quantumRemaining(0), quantumMax(0), wakeupTick(0),
+      startTime(0), totalExecutionTime(0), pageFaults(0), memoryAccesses(0),
+      commandCounter(0), totalCommands(0), config(Config()) {  // use default config
+
+    auto now = std::chrono::system_clock::now();
+    auto time_t = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&time_t), "%Y-%m-%d %H:%M:%S");
+    creationTimestamp = ss.str();
+}
+
+
 Process& Process::operator=(const Process& other) {
     if (this != &other) {
         name = other.name;
@@ -104,6 +119,10 @@ Process& Process::operator=(const Process& other) {
 void Process::initialize() {
     log("Process initialized");
     setStatus(ProcessStatus::READY);
+}
+
+ProcessStatus Process::getStatus() const {
+    return status;
 }
 
 void Process::start() {

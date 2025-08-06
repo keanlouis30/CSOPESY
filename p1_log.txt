@@ -1,0 +1,29 @@
+Hello World from  p1 !
+Hello World from  p1 !
+Hello World from  p1 !
+SLEEP: Process slept for 169 ticks.
+DECLARE failed: Symbol table full (max 32 variables).
+ADD: 379 = 78 + 301 (Result: 379)
+DECLARE failed: Symbol table full (max 32 variables).
+Executing Command: FOR 2 { ... }
+SUBTRACT: 673 = 974 - 301 (Result: 673)
+Executing Command: READ var_4 0x3
+ADD: 1298 = 409 + 889 (Result: 1298)
+SUBTRACT: -346 = 301 - 647 (Result: -346)
+DECLARE failed: Symbol table full (max 32 variables).
+ADD: 1042 = 326 + 716 (Result: 1042)
+ADD: 755 = 716 + 39 (Result: 755)
+Executing Command: FOR 2 { ... }
+Executing Command: WRITE 0x6 78a3
+ADD: 1890 = 936 + 954 (Result: 1890)
+Executing Command: FOR 2 { ... }
+Hello World from  p1 !
+Hello World from  p1 !
+Executing Command: FOR 2 { ... }
+DECLARE failed: Symbol table full (max 32 variables).
+Executing Command: FOR 2 { ... }
+DECLARE failed: Symbol table full (max 32 variables).
+DECLARE failed: Symbol table full (max 32 variables).
+Executing Command: READ var_6 0x0
+SLEEP: Process slept for 185 ticks.
+SLEEP: Process slept for 94 ticks.

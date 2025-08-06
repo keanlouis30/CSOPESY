@@ -8,7 +8,6 @@
 #include <thread>
 #include <chrono>
 #include "Config.h"
-#include "Status.h"
 #include "Globals.h"
 
 class CPU_Core
@@ -64,7 +63,7 @@ public:
         if (current_process == nullptr)
         {
             current_process = std::make_shared<Process>(proc);
-            current_process->status = RUNNING;
+            current_process->status = ProcessStatus::RUNNING;
             return true;
         }
         return false;

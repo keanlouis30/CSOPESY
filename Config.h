@@ -64,6 +64,7 @@ public:
     // Utility methods
     std::string getSchedulerString() const;
     uint32_t getTotalFrames() const { return maxOverallMem / memPerFrame; }
+    uint32_t getDelayPerExec() const;
     bool validateMemorySize(uint32_t memSize) const;
     
     // Display configuration

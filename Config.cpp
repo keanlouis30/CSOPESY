@@ -13,6 +13,11 @@ Config& Config::getInstance() {
     return *instance;
 }
 
+uint32_t Config::getDelayPerExec() const {
+    return delayPerExec;
+}
+
+
 bool Config::isPowerOfTwo(uint32_t value) const {
     return value > 0 && (value & (value - 1)) == 0;
 }

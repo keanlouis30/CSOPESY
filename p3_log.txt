@@ -1,0 +1,34 @@
+SUBTRACT: -901 = 26 - 927 (Result: -901)
+Executing Command: FOR 2 { ... }
+Hello World from  p3 !
+Executing Command: READ var_1 0x1
+Hello World from  p3 !
+Executing Command: FOR 2 { ... }
+ADD: 1304 = 377 + 927 (Result: 1304)
+Executing Command: READ var_2 0x4
+Executing Command: FOR 2 { ... }
+SLEEP: Process slept for 1 ticks.
+DECLARE failed: Symbol table full (max 32 variables).
+Executing Command: FOR 2 { ... }
+Hello World from  p3 !
+Executing Command: FOR 2 { ... }
+Hello World from  p3 !
+SUBTRACT: -695 = 178 - 873 (Result: -695)
+SUBTRACT: 105 = 503 - 398 (Result: 105)
+SLEEP: Process slept for 93 ticks.
+Executing Command: READ var_4 0x7
+SUBTRACT: -885 = 42 - 927 (Result: -885)
+DECLARE failed: Symbol table full (max 32 variables).
+ADD: 1413 = 646 + 767 (Result: 1413)
+SUBTRACT: -775 = 191 - 966 (Result: -775)
+Executing Command: READ var_6 0x2
+Executing Command: READ var_7 0x4
+ADD: 1323 = 396 + 927 (Result: 1323)
+DECLARE failed: Symbol table full (max 32 variables).
+SLEEP: Process slept for 82 ticks.
+SUBTRACT: -123 = 20 - 143 (Result: -123)
+SLEEP: Process slept for 106 ticks.
+DECLARE failed: Symbol table full (max 32 variables).
+ADD: 1474 = 787 + 687 (Result: 1474)
+DECLARE failed: Symbol table full (max 32 variables).
+DECLARE failed: Symbol table full (max 32 variables).

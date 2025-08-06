@@ -8,7 +8,6 @@
 #include <atomic>
 #include <memory>
 #include <chrono>
-#include "Status.h"
 #include "Config.h"
 #include "Instructions.h"
 #include "MemoryManager.h"
@@ -63,6 +62,7 @@ public:
     Process(const std::string& processName, int processID, const Config& config);
     Process(const std::string& processName, int processID, const Config& config, 
             const std::string& customInstructions);
+    Process();
     
     // Copy constructor and assignment
     Process(const Process& other);
@@ -140,6 +140,7 @@ public:
     int getPID() const;
     void setMemoryStartAddress(size_t address);
     void setMemorySize(size_t size);
+    ProcessStatus getStatus() const;
     
 private:
     // Configuration reference

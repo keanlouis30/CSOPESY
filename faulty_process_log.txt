@@ -1,0 +1,7 @@
+Executing Command: varA 10
+DECLARE: varB assigned offset 0
+Executing ADD command (raw): ADD varA varA varB
+Executing Command: WRITE 0x500 varA
+Executing Command: READ varC 0x500
+Executing Command: PRINT("Variable A: " + varA)
+Executing Command: PRINT("Result: " + varC)"
