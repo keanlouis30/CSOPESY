@@ -155,6 +155,15 @@ void Process::terminate() {
     log("Process terminated");
 }
 
+std::shared_ptr<Instruction> Process::getCurrentInstruction() const {
+    if (currentInstructionIndex < instructions.size()) {
+        return instructions[currentInstructionIndex];
+    }
+    return nullptr;
+}
+
+
+
 bool Process::executeNextInstruction() {
     if (isExecutionComplete() || status != ProcessStatus::RUNNING) {
         return false;
@@ -452,3 +461,4 @@ bool Process::validateVariableName(const std::string& variable) const {
 int Process::getPID() const { return pid; }
 void Process::setMemoryStartAddress(size_t address) { memoryStartAddress = address; }
 void Process::setMemorySize(size_t size) { memorySize = size; }
+
